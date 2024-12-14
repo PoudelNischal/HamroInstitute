@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="8dp"
     app:cardCornerRadius="16dp"
-    app:cardElevation="4dp">
+    app:cardElevation="4dp"
+    android:id="@+id/cardView">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -13,38 +15,45 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <!-- Title -->
         <TextView
             android:id="@+id/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Power Bi"
+            android:text="Title Placeholder"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- Subtitle -->
         <TextView
             android:id="@+id/subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Hi Nischal, Thanks to complete."
+            android:text="Subtitle Placeholder"
             android:textSize="14sp" />
 
+        <!-- Progress Bar -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:progress="100" />
+            android:progress="100"
+            android:max="100"
+            style="?android:attr/progressBarStyleHorizontal" />
 
+        <!-- Completion Status -->
         <TextView
             android:id="@+id/completionStatus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="Completed 12 of 12"
+            android:text="Completed X of Y"
             android:textColor="@android:color/holo_green_dark"
             android:textSize="14sp" />
 
+        <!-- Horizontal Row for Duration and Lessons -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -52,26 +61,30 @@
             android:orientation="horizontal"
             >
 
+            <!-- Duration -->
             <TextView
                 android:id="@+id/duration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="6 hrs 52min"
+                android:layout_marginEnd="16dp"
                 android:background="@drawable/rounded_bg_orange"
                 android:padding="8dp"
+                android:text="Duration Placeholder"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
 
+            <!-- Lessons -->
             <TextView
                 android:id="@+id/lessons"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="24 Lessons"
                 android:background="@drawable/rounded_bg_blue"
                 android:padding="8dp"
+                android:text="Lessons Placeholder"
                 android:textColor="@android:color/white"
                 android:textSize="12sp" />
         </LinearLayout>
+
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
