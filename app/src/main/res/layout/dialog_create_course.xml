@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <!-- Course Fields -->
+    <EditText
+        android:id="@+id/courseTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Course Title" />
+
+    <EditText
+        android:id="@+id/courseDescription"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Course Description" />
+
+    <EditText
+        android:id="@+id/courseTags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Tags (comma-separated)" />
+
+    <Button
+        android:id="@+id/selectThumbnailButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Select Thumbnail" />
+
+    <ImageView
+        android:id="@+id/thumbnailPreview"
+        android:layout_width="match_parent"
+        android:layout_height="250dp"
+        android:padding="8dp"
+        android:text="Thumbnail will appear here" />
+
+    <Button
+        android:id="@+id/createCourseButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Create Course" />
+
+
+</LinearLayout>
+

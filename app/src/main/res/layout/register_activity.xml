@@ -7,13 +7,13 @@
     tools:context=".RegisterActivity">
 
     <!-- Background LinearLayout -->
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
         android:gravity="center"
         android:orientation="vertical"
-        tools:ignore="UselessParent">
+      >
 
         <!-- Centered content LinearLayout -->
         <LinearLayout
@@ -26,8 +26,6 @@
             android:paddingHorizontal="35dp">
 
             <!-- Logo at the top -->
-
-            <!-- Slogan Text -->
             <ImageView
                 android:id="@+id/logo"
                 android:layout_width="89dp"
@@ -38,6 +36,7 @@
                 android:scaleType="fitCenter"
                 android:src="@drawable/hamra" />
 
+            <!-- Slogan Text -->
             <TextView
                 android:id="@+id/slogan"
                 android:layout_width="wrap_content"
@@ -144,6 +143,46 @@
                     android:textSize="16sp" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <!-- Role Label -->
+            <TextView
+                android:id="@+id/role_label"
+                android:layout_width="wrap_content"
+                android:layout_gravity="start"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Select your Role:"
+                android:textColor="#333"
+                android:layout_marginLeft="10px"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- RadioGroup for Role Selection -->
+            <RadioGroup
+                android:id="@+id/role_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
+
+                <RadioButton
+                    android:id="@+id/student_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Student"
+                    android:checked="true"
+                    android:textSize="14sp"
+                    android:layout_marginEnd="16dp" />
+
+                <RadioButton
+                    android:id="@+id/teacher_radio_button"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Teacher"
+                    android:textSize="14sp" />
+            </RadioGroup>
+
             <!-- Register Button -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/register_button"
@@ -158,5 +197,5 @@
 
         </LinearLayout>
 
-    </LinearLayout>
+    </ScrollView>
 </FrameLayout>

@@ -1,64 +1,108 @@
 package com.example.merainstitue;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link CourseFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
-public class CourseFragment extends Fragment {
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+import java.util.ArrayList;
+import java.util.List;
 
-    public CourseFragment() {
-        // Required empty public constructor
-    }
+public class CourseFragment extends Fragment implements CourseAdapter.OnCourseClickListener {
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment CourseFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static CourseFragment newInstance(String param1, String param2) {
-        CourseFragment fragment = new CourseFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
+    private List<Course> courseList;
+    private CourseAdapter courseAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_course, container, false);
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Initialize RecyclerView
+        RecyclerView coursesRecyclerView = view.findViewById(R.id.coursesRecyclerView);
+        coursesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        courseList = new ArrayList<>();
+        courseAdapter = new CourseAdapter(courseList, this); // Pass the click listener to the adapter
+        coursesRecyclerView.setAdapter(courseAdapter);
+
+        // Check user authentication
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            fetchCourses(user.getUid());
+        } else {
+            Log.e("CourseFragment", "User is not authenticated");
+            Toast.makeText(getContext(), "Please log in to view your courses.", Toast.LENGTH_SHORT).show();
+        }
+
+        // Add Course Button functionality
+        view.findViewById(R.id.addCourseButton).setOnClickListener(v -> showCreateCourseDialog());
+    }
+
+    private void fetchCourses(String currentUserId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Access the "Courses" collection in Firestore
+        db.collection("Courses")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        courseList.clear();
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            try {
+                                // Parse course from document
+                                String courseId = document.getId();  // This is the unique ID of the document
+                                Course course = document.toObject(Course.class);
+                                if (course != null) {
+                                    // Log the Base64 string (using the correct field name)
+                                    Log.d("CourseFragment", "Base64 image: " + course.getImageBase64());
+                                    course.setCourseId(courseId);
+                                    courseList.add(course);
+                                } else {
+                                    Log.d("CourseFragment", "Course is null for document: " + document.getId());
+                                }
+                            } catch (Exception e) {
+                                Log.e("CourseFragment", "Error parsing course", e);
+                            }
+                        }
+                        courseAdapter.notifyDataSetChanged();
+                    } else {
+                        Log.e("CourseFragment", "Error getting courses: " + task.getException());
+                    }
+                });
+    }
+
+    private void showCreateCourseDialog() {
+        CourseCreateDialogFragment dialogFragment = new CourseCreateDialogFragment();
+        dialogFragment.show(getParentFragmentManager(), "course_create_dialog");
+    }
+
+    @Override
+    public void onCourseClick(String courseId) {
+        Log.d("devs" , "id" + courseId);
+        // Open the LessonActivity and pass the courseId
+        Intent intent = new Intent(getContext(), LessonActivity.class);
+        intent.putExtra("COURSE_ID", courseId);  // Pass the courseId to the next activity
+        startActivity(intent);
     }
 }

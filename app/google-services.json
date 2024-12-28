@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "405912544102",
+    "project_id": "fitnessproj-94f06",
+    "storage_bucket": "fitnessproj-94f06.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405912544102:android:dd3bddd486aedddb01dea7",
+        "android_client_info": {
+          "package_name": "com.example.fitnessapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxOymw-ClGRt5brlAI_lwCiT64zyHSjw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:405912544102:android:4f16226f0f72069101dea7",
+        "android_client_info": {
+          "package_name": "com.example.merainstitue"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBxOymw-ClGRt5brlAI_lwCiT64zyHSjw8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

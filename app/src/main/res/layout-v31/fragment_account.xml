@@ -24,7 +24,7 @@
             android:layout_marginBottom="16dp">
 
             <!-- Profile Image with rounded border -->
-            <com.google.android.material.imageview.ShapeableImageView
+            <ImageView
                 android:id="@+id/profileImage"
                 android:layout_width="90dp"
                 android:layout_height="90dp"
@@ -32,7 +32,8 @@
                 android:src="@drawable/ic_default_profile"
                 android:scaleType="centerCrop"
                 android:layout_marginEnd="16dp"
-                app:shapeAppearanceOverlay="@style/RoundedImageView" />
+                android:clipToOutline="true"
+                android:outlineProvider="background" />
 
             <!-- User Name and Email Section -->
             <LinearLayout
@@ -47,7 +48,7 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="loading..."
+                    android:text="Nischal Kumar"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
@@ -58,7 +59,7 @@
                     android:id="@+id/username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="loading..."
+                    android:text="_@nischal_dev"
                     android:textSize="16sp"
                     android:textColor="@color/black"
                     android:layout_marginBottom="8dp" />
@@ -68,7 +69,7 @@
                     android:id="@+id/userEmail"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="loading..."
+                    android:text="nischal.dev@example.com"
                     android:textSize="14sp"
                     android:textColor="@color/black" />
             </LinearLayout>
@@ -156,13 +157,5 @@
             android:textAllCaps="false"
             android:textColor="#fff"
             app:cornerRadius="8dp" />
-
-        <!-- ProgressBar for loading -->
-<!--        <ProgressBar-->
-<!--            android:id="@+id/progressBar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:visibility="gone" />-->
     </LinearLayout>
 </FrameLayout>

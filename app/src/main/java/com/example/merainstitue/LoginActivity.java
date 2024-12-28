@@ -1,6 +1,7 @@
 package com.example.merainstitue;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
@@ -13,14 +14,22 @@ import com.google.firebase.auth.FirebaseAuth;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button loginButton; // Login button
-    private Button signupButton; // Signup button
+    private Button loginButton, signupButton; // Buttons for login and signup
     private EditText emailEditText, passwordEditText; // Input fields
     private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // Check login state before showing login screen
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        boolean isValidLogin = prefs.getBoolean("isValidLogin", false);
+        if (isValidLogin) {
+            redirectToMainActivity(); // Skip login if already logged in
+            return;
+        }
+
         setContentView(R.layout.fragment_login_activity);
 
         // Initialize FirebaseAuth
@@ -29,12 +38,11 @@ public class LoginActivity extends AppCompatActivity {
         // Initialize UI components
         loginButton = findViewById(R.id.login_button);
         signupButton = findViewById(R.id.register_button);
-        emailEditText = findViewById(R.id.email); // Ensure your layout has this ID
-        passwordEditText = findViewById(R.id.password); // Ensure your layout has this ID
+        emailEditText = findViewById(R.id.username);
+        passwordEditText = findViewById(R.id.password);
 
         // Signup button click listener
         signupButton.setOnClickListener(v -> {
-            Log.d("LoginActivity", "Signup button clicked");
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
             startActivity(intent);
             finish();
@@ -60,21 +68,28 @@ public class LoginActivity extends AppCompatActivity {
             return;
         }
 
-        // Authenticate with Firebase
+        // Firebase login
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Login successful, navigate to MainActivity
+                        // Save login state
+                        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                        SharedPreferences.Editor editor = prefs.edit();
+                        editor.putBoolean("isValidLogin", true);
+                        editor.apply();
+
                         Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                        startActivity(intent);
-                        finish();
+                        redirectToMainActivity();
                     } else {
-                        // Login failed
                         String errorMessage = task.getException() != null ? task.getException().getMessage() : "Login failed";
-                        Log.e("LoginActivity", "Login error: " + errorMessage);
-                        Toast.makeText(LoginActivity.this, "Authentication failed: " + errorMessage, Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
+    }
+
+    private void redirectToMainActivity() {
+        Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+        startActivity(intent);
+        finish();
     }
 }
