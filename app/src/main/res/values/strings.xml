@@ -3,4 +3,9 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="don_t_have_an_account_signup">Don\'t have an account? Signup</string>
+
+    <string name="cloud_name">dmluojnjm</string>
+    <string name="api_key">175625128133282</string>
+    <string name="api_secret">aDKulR0TQOvEHeiSET7MKMFIzBQ</string>
+    <string name="img">img</string>
 </resources>

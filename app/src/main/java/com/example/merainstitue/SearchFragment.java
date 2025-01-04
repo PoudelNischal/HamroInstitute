@@ -1,64 +1,130 @@
 package com.example.merainstitue;
 
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link SearchFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class SearchFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private static final String TAG = "FirestoreDebug";
+    private FirebaseFirestore db;
+    private RecyclerView recyclerView;
+    private CardAdapter adapter;
+    private List<CardItem> cardList;
 
     public SearchFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment SearchFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static SearchFragment newInstance(String param1, String param2) {
-        SearchFragment fragment = new SearchFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false);
+        View view = inflater.inflate(R.layout.fragment_search, container, false);
+
+        // Initialize Firestore
+        db = FirebaseFirestore.getInstance();
+
+        // Set up RecyclerView
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
+
+        cardList = new ArrayList<>();
+        adapter = new CardAdapter(cardList, getContext());
+        recyclerView.setAdapter(adapter);
+
+        // Set up SearchView
+        androidx.appcompat.widget.SearchView searchView = view.findViewById(R.id.searchView);
+        searchView.setOnQueryTextListener(new androidx.appcompat.widget.SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                // Search action when submit button is pressed
+                if (!TextUtils.isEmpty(query)) {
+                    searchCourses(query);
+                }
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                // Search action when text is changed
+                if (!TextUtils.isEmpty(newText)) {
+                    searchCourses(newText);
+                } else {
+                    cardList.clear();  // Clear the list if search is empty
+                    adapter.notifyDataSetChanged();
+                }
+                return false;
+            }
+        });
+
+        return view;
     }
+
+    private void searchCourses(String query) {
+        // Convert the query to lowercase to ensure case-insensitive search
+        final String normalizedQuery = query.toLowerCase();
+
+        // Query the Firestore database for courses matching the normalized query in either the title or tags
+        db.collection("Courses")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        cardList.clear();  // Clear the current list
+                        for (QueryDocumentSnapshot document : task.getResult()) {
+                            String id = document.getId();
+                            String courseId = document.getString("courseId");
+                            String title = document.getString("title");
+                            String description = document.getString("description");
+                            String imageBase64 = document.getString("imageBase64");
+                            String teacherId = document.getString("teacherId");
+                            List<String> tags = (List<String>) document.get("tags"); // Assuming 'tags' is a list of strings
+
+                            // Log the retrieved data for debugging
+                            Log.d(TAG, "Course: " + title + ", courseId: " + courseId);
+
+                            // Check if title contains the search query (case-insensitive)
+                            boolean titleMatches = title != null && title.toLowerCase().contains(normalizedQuery);
+
+                            // Check if any tag contains the search query (case-insensitive)
+                            boolean tagsMatch = false;
+                            if (tags != null) {
+                                for (String tag : tags) {
+                                    if (tag.toLowerCase().contains(normalizedQuery)) {
+                                        tagsMatch = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            // If either title or tags match the query, add to the list
+                            if (titleMatches || tagsMatch) {
+                                CardItem cardItem = new CardItem(id ,courseId, title, description, imageBase64, teacherId, 0); // Assuming 0 for lesson count
+                                cardList.add(cardItem);
+                            }
+                        }
+                        // Notify adapter to update RecyclerView
+                        adapter.notifyDataSetChanged();
+                    } else {
+                        Toast.makeText(getContext(), "Error fetching courses: " + task.getException(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+    }
+
 }

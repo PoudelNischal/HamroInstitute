@@ -1,49 +1,88 @@
 package com.example.merainstitue;
 
 public class CardItem {
-    private int id;
+    private String id;
+    private String courseId;
     private String title;
-    private String subtitle;
-    private int progress;
-    private String completionStatus;
-    private String duration;
-    private String lessons;
+    private String description;
+    private String imageBase64;
+    private String teacherId;
+    private int lessonCount;
 
-    public CardItem(int id, String title, String subtitle, int progress, String completionStatus, String duration, String lessons) {
+    // Empty constructor for Firestore
+    public CardItem() {}
+
+    // Constructor
+    public CardItem(String id, String courseId, String title, String description, String imageBase64, String teacherId, int lessonCount) {
         this.id = id;
+        this.courseId = courseId;
         this.title = title;
-        this.subtitle = subtitle;
-        this.progress = progress;
-        this.completionStatus = completionStatus;
-        this.duration = duration;
-        this.lessons = lessons;
+        this.description = description;
+        this.imageBase64 = imageBase64;
+        this.teacherId = teacherId;
+        this.lessonCount = lessonCount;
     }
 
-    public int getId() {
+    // Getter and setter for id
+    public String getId() {
         return id;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    // Getter and setter for courseId
+    public String getCourseId() {
+        return courseId;
+    }
+
+    public void setCourseId(String courseId) {
+        this.courseId = courseId;
+    }
+
+    // Getter and setter for title
     public String getTitle() {
         return title;
     }
 
-    public String getSubtitle() {
-        return subtitle;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public int getProgress() {
-        return progress;
+    // Getter and setter for description
+    public String getDescription() {
+        return description;
     }
 
-    public String getCompletionStatus() {
-        return completionStatus;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getDuration() {
-        return duration;
+    // Getter and setter for imageBase64
+    public String getImageBase64() {
+        return imageBase64;
     }
 
-    public String getLessons() {
-        return lessons;
+    public void setImageBase64(String imageBase64) {
+        this.imageBase64 = imageBase64;
+    }
+
+    // Getter and setter for teacherId
+    public String getTeacherId() {
+        return teacherId;
+    }
+
+    public void setTeacherId(String teacherId) {
+        this.teacherId = teacherId;
+    }
+
+    // Getter and setter for lessonCount
+    public int getLessonCount() {
+        return lessonCount;
+    }
+
+    public void setLessonCount(int lessonCount) {
+        this.lessonCount = lessonCount;
     }
 }

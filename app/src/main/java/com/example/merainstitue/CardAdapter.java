@@ -2,93 +2,86 @@ package com.example.merainstitue;
 
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
 
-    private List<CardItem> cardList;
+    private List<CardItem> cardItems;
     private Context context;
 
-    // Constructor
-    public CardAdapter(List<CardItem> cardList, Context context) {
-        this.cardList = cardList;
+    public CardAdapter(List<CardItem> cardItems, Context context) {
+        this.cardItems = cardItems;
         this.context = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        // Inflate the layout for each card item
         View view = LayoutInflater.from(context).inflate(R.layout.fragment_card_item, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        // Get the current card item
-        CardItem card = cardList.get(position);
+        CardItem cardItem = cardItems.get(position);
+        holder.title.setText(cardItem.getTitle());
+        holder.description.setText(cardItem.getDescription());
+        holder.lessonCount.setText("Lessons: " + cardItem.getLessonCount());
 
-        // Bind data to the views
-        holder.title.setText(card.getTitle());
-        holder.subtitle.setText(card.getSubtitle());
-        holder.progressBar.setProgress(card.getProgress());
-        holder.completionStatus.setText(card.getCompletionStatus());
-        holder.duration.setText(card.getDuration());
-        holder.lessons.setText(card.getLessons());
+        // Decode Base64 image and set it
+        String base64Image = cardItem.getImageBase64();
+        if (base64Image != null && !base64Image.isEmpty()) {
+            byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+            Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+            holder.image.setImageBitmap(decodedByte);
+        } else {
+            // Set a placeholder image if no image is available
+            holder.image.setImageResource(R.drawable.ic_placeholder); // Replace with your placeholder image resource
+        }
 
-        // Set click listener for navigation to DetailActivity
-        holder.cardView.setOnClickListener(v -> {
-            // Log the card click event
-            Log.d("CardAdapter", "Card clicked: " + card.getTitle());
-
-            // Create an intent to navigate to DetailActivity
+        // Set the onClickListener to pass data to DetailActivity
+        holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, DetailActivity.class);
-            intent.putExtra("id", card.getId());
-            intent.putExtra("title", card.getTitle());
-            intent.putExtra("subtitle", card.getSubtitle());
-            intent.putExtra("progress", card.getProgress());
-            intent.putExtra("completionStatus", card.getCompletionStatus());
-            intent.putExtra("duration", card.getDuration());
-            intent.putExtra("lessons", card.getLessons());
-
-            // Start the DetailActivity
+            // Passing correct courseId to DetailActivity
+            intent.putExtra("courseId", cardItem.getId()); // courseId of the course
+            intent.putExtra("title", cardItem.getTitle());
+            intent.putExtra("subtitle", cardItem.getDescription());
+            intent.putExtra("progress", cardItem.getLessonCount());
+            intent.putExtra("completionStatus", "In Progress"); // Example logic for completion status
+            intent.putExtra("duration", "N/A"); // Add actual duration logic if needed
+            intent.putExtra("lessons", String.valueOf(cardItem.getLessonCount()));
             context.startActivity(intent);
         });
+
     }
 
     @Override
     public int getItemCount() {
-        return cardList.size(); // Return the total number of cards
+        return cardItems.size();
     }
 
-    // ViewHolder class to hold item views
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView title, subtitle, completionStatus, duration, lessons;
-        ProgressBar progressBar;
-        CardView cardView;
+        TextView title, description, lessonCount;
+        ImageView image;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-            // Initialize views
             title = itemView.findViewById(R.id.title);
-            subtitle = itemView.findViewById(R.id.subtitle);
-            progressBar = itemView.findViewById(R.id.progressBar);
-            completionStatus = itemView.findViewById(R.id.completionStatus);
-            duration = itemView.findViewById(R.id.duration);
-            lessons = itemView.findViewById(R.id.lessons);
-            cardView = itemView.findViewById(R.id.cardView);
+            description = itemView.findViewById(R.id.description);
+            lessonCount = itemView.findViewById(R.id.lessonCount);
+            image = itemView.findViewById(R.id.image); // Initialize the ImageView here
         }
     }
 }
