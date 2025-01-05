@@ -11,6 +11,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -72,20 +73,47 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Save login state
-                        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-                        SharedPreferences.Editor editor = prefs.edit();
-                        editor.putBoolean("isValidLogin", true);
-                        editor.apply();
+                        // Get the logged-in user's ID
+                        String userId = mAuth.getCurrentUser().getUid();
 
-                        Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
-                        redirectToMainActivity();
+                        // Fetch the user's role from Firestore
+                        FirebaseFirestore.getInstance()
+                                .collection("users") // Replace "Users" with your Firestore collection name
+                                .document(userId)
+                                .get()
+                                .addOnSuccessListener(documentSnapshot -> {
+                                    if (documentSnapshot.exists()) {
+                                        // Get the user's role
+                                        String role = documentSnapshot.getString("role"); // Assumes "role" field exists in Firestore
+
+                                        if (role != null) {
+                                            // Save the role and login state in SharedPreferences
+                                            SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+                                            SharedPreferences.Editor editor = prefs.edit();
+                                            editor.putBoolean("isValidLogin", true);
+                                            editor.putString("role", role);
+                                            editor.apply();
+
+                                            Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
+                                            redirectToMainActivity();
+                                        } else {
+                                            Toast.makeText(LoginActivity.this, "User role not found!", Toast.LENGTH_SHORT).show();
+                                        }
+                                    } else {
+                                        Toast.makeText(LoginActivity.this, "User data not found!", Toast.LENGTH_SHORT).show();
+                                    }
+                                })
+                                .addOnFailureListener(e -> {
+                                    Log.e("LoginActivity", "Error fetching user role", e);
+                                    Toast.makeText(LoginActivity.this, "Error fetching user data!", Toast.LENGTH_SHORT).show();
+                                });
                     } else {
                         String errorMessage = task.getException() != null ? task.getException().getMessage() : "Login failed";
                         Toast.makeText(LoginActivity.this, "Error: " + errorMessage, Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 
     private void redirectToMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);

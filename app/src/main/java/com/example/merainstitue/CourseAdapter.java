@@ -3,12 +3,12 @@ package com.example.merainstitue;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.util.Log;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,37 +36,42 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     public void onBindViewHolder(CourseViewHolder holder, int position) {
         Course course = courseList.get(position);
 
-        // Set the title and description
-        holder.courseTitle.setText(course.getTitle());
-        holder.courseDescription.setText(course.getDescription());
+        // Check if the views are not null
+        if (holder.courseTitle != null) {
+            holder.courseTitle.setText(course.getTitle());
+        } else {
+            Log.e("CourseAdapter", "courseTitle is null");
+        }
+
+        if (holder.courseDescription != null) {
+            holder.courseDescription.setText(course.getDescription());
+        } else {
+            Log.e("CourseAdapter", "courseDescription is null");
+        }
+
+        if (holder.coursePrice != null) {
+            holder.coursePrice.setText("Price: $" + course.getPrice());
+        } else {
+            Log.e("CourseAdapter", "coursePrice is null");
+        }
 
         // Decode the base64 image string to Bitmap and set it to ImageView
         String base64Image = course.getImageBase64();
-        Log.d("CourseAdapter", "Base64 String: " + base64Image);
-
         if (base64Image != null && !base64Image.isEmpty()) {
-            // Remove the "data:image" prefix if it exists
             if (base64Image.contains("data:image")) {
-                base64Image = base64Image.split(",")[1];  // Get the actual Base64 string
+                base64Image = base64Image.split(",")[1];
             }
             try {
                 byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
                 Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                if (decodedByte != null) {
-                    holder.courseThumbnail.setImageBitmap(decodedByte);  // Set the decoded Bitmap
-                } else {
-                    holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);  // Placeholder on error
-                }
+                holder.courseThumbnail.setImageBitmap(decodedByte);
             } catch (Exception e) {
-                e.printStackTrace();
-                Log.e("CourseAdapter", "Error decoding Base64 image", e);
-                holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);  // Fallback to placeholder
+                holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);
             }
         } else {
-            holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);  // Use placeholder if no image
+            holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);
         }
 
-        // Set click listener for each item
         holder.itemView.setOnClickListener(v -> {
             if (onCourseClickListener != null) {
                 onCourseClickListener.onCourseClick(course.getCourseId());
@@ -83,12 +88,14 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     public static class CourseViewHolder extends RecyclerView.ViewHolder {
         public TextView courseTitle;
         public TextView courseDescription;
+        public TextView coursePrice;
         public ImageView courseThumbnail;
 
         public CourseViewHolder(View view) {
             super(view);
             courseTitle = view.findViewById(R.id.courseTitle);
             courseDescription = view.findViewById(R.id.courseDescription);
+            coursePrice = view.findViewById(R.id.coursePrice);
             courseThumbnail = view.findViewById(R.id.courseThumbnail);
         }
     }

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupBottomNavigation() {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        String userRole = prefs.getString("userRole", "student"); // Default to "student" if not set
+        String userRole = prefs.getString("role", "student"); // Default to "student" if not set
 
         // Check if the user is a teacher and only then show the "Courses" tab
         binding.bottomNavigationView2.getMenu().findItem(R.id.course).setVisible(userRole.equals("teacher"));

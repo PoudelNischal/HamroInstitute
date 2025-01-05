@@ -1,6 +1,5 @@
 package com.example.merainstitue;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -64,6 +63,9 @@ public class HomeFragment extends Fragment {
                             String imageBase64 = courseDoc.getString("imageBase64");
                             String teacherId = courseDoc.getString("teacherId");
 
+                            // Fetch price as Double
+                            Double price = courseDoc.getDouble("price");
+
                             // Log the entire document for debugging
                             Log.d(TAG, "Course document: " + courseDoc.getData());
                             Log.d(TAG, "Fetched Course ID: " + courseId);
@@ -75,7 +77,7 @@ public class HomeFragment extends Fragment {
                             }
 
                             // Fetch lessons count for each course
-                            fetchLessonsCount(id, courseId, title, description, imageBase64, teacherId);
+                            fetchLessonsCount(id, courseId, title, description, imageBase64, teacherId, price);  // Pass price here
                         }
                     } else {
                         Log.e(TAG, "Failed to fetch courses", courseTask.getException());
@@ -83,25 +85,18 @@ public class HomeFragment extends Fragment {
                 });
     }
 
-    private void fetchLessonsCount(String id, String courseId, String title, String description, String imageBase64, String teacherId) {
+    private void fetchLessonsCount(String id, String courseId, String title, String description, String imageBase64, String teacherId, Double price) {
         Log.d(TAG, "Querying lessons for courseId: " + id);
 
         db.collection("lessons")
-                .whereEqualTo("courseId", id)  // Make sure you're querying by the courseId
+                .whereEqualTo("courseId", id)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Get the result size (number of lessons)
                         int resultSize = task.getResult().size();
-                        Log.d("FirestoreDebug", "Lesson query result size for courseId: " + courseId + " = " + resultSize);
 
-                        // Log each document's data
-                        for (QueryDocumentSnapshot document : task.getResult()) {
-                            Log.d("FirestoreDebug", "Lesson document for courseId: " + courseId + " = " + document.getData());
-                        }
-
-                        // After fetching lesson count, create the CardItem
-                        CardItem cardItem = new CardItem(id, courseId, title, description, imageBase64, teacherId, resultSize);
+                        // After fetching lesson count, create the CardItem with price
+                        CardItem cardItem = new CardItem(id, courseId, title, description, imageBase64, teacherId, resultSize, price); // Pass price
                         cardList.add(cardItem);
 
                         // Notify adapter after all data is fetched
@@ -111,5 +106,4 @@ public class HomeFragment extends Fragment {
                     }
                 });
     }
-
 }

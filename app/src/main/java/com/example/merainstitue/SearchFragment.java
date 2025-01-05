@@ -115,7 +115,8 @@ public class SearchFragment extends Fragment {
                                 document.getString("description"),
                                 document.getString("imageBase64"),
                                 document.getString("teacherId"),
-                                0 // Assuming lesson count is 0 for now
+                                0 ,
+                                document.getDouble("price") != null ? document.getDouble("price") : 0.0
                         ));
                     }
                 }

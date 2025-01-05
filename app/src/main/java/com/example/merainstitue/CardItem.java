@@ -8,12 +8,13 @@ public class CardItem {
     private String imageBase64;
     private String teacherId;
     private int lessonCount;
+    private Double price; // New field for price
 
     // Empty constructor for Firestore
     public CardItem() {}
 
     // Constructor
-    public CardItem(String id, String courseId, String title, String description, String imageBase64, String teacherId, int lessonCount) {
+    public CardItem(String id, String courseId, String title, String description, String imageBase64, String teacherId, int lessonCount,  Double price) {
         this.id = id;
         this.courseId = courseId;
         this.title = title;
@@ -21,6 +22,7 @@ public class CardItem {
         this.imageBase64 = imageBase64;
         this.teacherId = teacherId;
         this.lessonCount = lessonCount;
+        this.price = price;
     }
 
     // Getter and setter for id
@@ -84,5 +86,13 @@ public class CardItem {
 
     public void setLessonCount(int lessonCount) {
         this.lessonCount = lessonCount;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 }

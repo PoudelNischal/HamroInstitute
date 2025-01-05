@@ -33,5 +33,11 @@
             android:layout_height="wrap_content"
             android:text="Course Description"
             android:textSize="14sp" />
+        <TextView
+            android:id="@+id/coursePrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Price"
+            android:textSize="14sp"/>
     </LinearLayout>
 </LinearLayout>

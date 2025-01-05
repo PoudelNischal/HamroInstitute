@@ -34,7 +34,7 @@ import java.util.UUID;
 
 public class CourseCreateDialogFragment extends DialogFragment {
 
-    private EditText courseTitleEditText, courseDescriptionEditText, courseTagsEditText;
+    private EditText courseTitleEditText, courseDescriptionEditText, courseTagsEditText, coursePriceEditText;
     private ImageView courseImageView;
     private String imageBase64 = ""; // Store the image in Base64 format
 
@@ -71,6 +71,7 @@ public class CourseCreateDialogFragment extends DialogFragment {
         courseTitleEditText = dialogView.findViewById(R.id.courseTitle);
         courseDescriptionEditText = dialogView.findViewById(R.id.courseDescription);
         courseTagsEditText = dialogView.findViewById(R.id.courseTags);
+        coursePriceEditText = dialogView.findViewById(R.id.coursePrice); // New field for price
         Button createCourseButton = dialogView.findViewById(R.id.createCourseButton);
         Button selectImageButton = dialogView.findViewById(R.id.selectThumbnailButton);
         courseImageView = dialogView.findViewById(R.id.thumbnailPreview);
@@ -88,14 +89,17 @@ public class CourseCreateDialogFragment extends DialogFragment {
             String title = courseTitleEditText.getText().toString().trim();
             String description = courseDescriptionEditText.getText().toString().trim();
             String tags = courseTagsEditText.getText().toString().trim();
+            String priceText = coursePriceEditText.getText().toString().trim();
 
-            if (!title.isEmpty() && !description.isEmpty() && !imageBase64.isEmpty()) {
-                Log.d("CourseCreate", "Title: " + title);
-                Log.d("CourseCreate", "Description: " + description);
-                Log.d("CourseCreate", "Tags: " + tags);
-                Log.d("CourseCreate", "ImageBase64 Length: " + imageBase64.length());
-
-                addCourseToFirestore(title, description, tags, imageBase64);
+            if (!title.isEmpty() && !description.isEmpty() && !imageBase64.isEmpty() && !priceText.isEmpty()) {
+                double price;
+                try {
+                    price = Double.parseDouble(priceText);
+                } catch (NumberFormatException e) {
+                    Toast.makeText(getContext(), "Invalid price format", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                addCourseToFirestore(title, description, tags, imageBase64, price);
                 dismiss();
             } else {
                 Toast.makeText(getContext(), "Please fill all fields and select an image", Toast.LENGTH_SHORT).show();
@@ -140,7 +144,7 @@ public class CourseCreateDialogFragment extends DialogFragment {
         return Base64.encodeToString(byteArray, Base64.DEFAULT);
     }
 
-    private void addCourseToFirestore(String title, String description, String tags, String imageBase64) {
+    private void addCourseToFirestore(String title, String description, String tags, String imageBase64, double price) {
         List<String> tagsList = Arrays.asList(tags.split(",")); // Convert to List
 
         Map<String, Object> courseData = new HashMap<>();
@@ -150,6 +154,7 @@ public class CourseCreateDialogFragment extends DialogFragment {
         courseData.put("description", description);
         courseData.put("tags", tagsList); // Store as List
         courseData.put("imageBase64", imageBase64);
+        courseData.put("price", price); // Add price to Firestore data
         courseData.put("teacherId", FirebaseAuth.getInstance().getCurrentUser().getUid());
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -158,5 +163,5 @@ public class CourseCreateDialogFragment extends DialogFragment {
                 .addOnSuccessListener(documentReference -> Log.d("FirestoreSuccess", "Course created: " + documentReference.getId()))
                 .addOnFailureListener(e -> Log.e("FirestoreError", "Failed to create course", e));
     }
-
 }
+

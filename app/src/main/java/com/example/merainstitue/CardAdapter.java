@@ -39,6 +39,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         holder.title.setText(cardItem.getTitle());
         holder.description.setText(cardItem.getDescription());
         holder.lessonCount.setText("Lessons: " + cardItem.getLessonCount());
+        holder.price.setText("price: " + cardItem.getPrice());
+
 
         // Decode Base64 image and set it
         String base64Image = cardItem.getImageBase64();
@@ -62,6 +64,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             intent.putExtra("completionStatus", "In Progress"); // Example logic for completion status
             intent.putExtra("duration", "N/A"); // Add actual duration logic if needed
             intent.putExtra("lessons", String.valueOf(cardItem.getLessonCount()));
+            intent.putExtra("price" , cardItem.getPrice());
             context.startActivity(intent);
         });
 
@@ -75,12 +78,14 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         TextView title, description, lessonCount;
         ImageView image;
+        TextView price;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
             lessonCount = itemView.findViewById(R.id.lessonCount);
+            price = itemView.findViewById(R.id.price);
             image = itemView.findViewById(R.id.image); // Initialize the ImageView here
         }
     }

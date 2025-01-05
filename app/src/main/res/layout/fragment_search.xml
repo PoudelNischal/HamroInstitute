@@ -32,9 +32,9 @@
             android:id="@+id/lottieInitial"
             android:layout_width="200dp"
             android:layout_height="200dp"
-            app:lottie_rawRes="@raw/initial_search"
+            app:lottie_autoPlay="true"
             app:lottie_loop="true"
-            app:lottie_autoPlay="true" />
+            app:lottie_rawRes="@raw/initial_search" />
 
         <TextView
             android:layout_width="wrap_content"
