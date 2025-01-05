@@ -33,11 +33,21 @@
             android:layout_height="wrap_content"
             android:text="Course Description"
             android:textSize="14sp" />
+
         <TextView
             android:id="@+id/coursePrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Price"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
+
+        <!-- Separator between price and next content -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            android:layout_marginTop="8dp" />
+
     </LinearLayout>
+
 </LinearLayout>
