@@ -38,8 +38,8 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
         CardItem cardItem = cardItems.get(position);
         holder.title.setText(cardItem.getTitle());
         holder.description.setText(cardItem.getDescription());
-        holder.lessonCount.setText("Lessons: " + cardItem.getLessonCount());
-        holder.price.setText("price: " + cardItem.getPrice());
+//        holder.lessonCount.setText("Lessons: " + cardItem.getLessonCount());
+        holder.price.setText("Price: " + cardItem.getPrice());
 
 
         // Decode Base64 image and set it
@@ -84,7 +84,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             description = itemView.findViewById(R.id.description);
-            lessonCount = itemView.findViewById(R.id.lessonCount);
+//            lessonCount = itemView.findViewById(R.id.lessonCount);
             price = itemView.findViewById(R.id.price);
             image = itemView.findViewById(R.id.image); // Initialize the ImageView here
         }
