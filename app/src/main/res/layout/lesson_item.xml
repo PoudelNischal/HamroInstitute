@@ -3,21 +3,46 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_marginTop="8dp">
+    android:layout_marginTop="8dp"
+    android:padding="8dp"
+    android:background="@color/white"
+    android:divider="@drawable/divider"
+    android:showDividers="middle">
 
+    <!-- Thumbnail Image -->
+    <ImageView
+        android:id="@+id/lessonThumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:layout_marginBottom="8dp"
+        android:contentDescription="@string/image_thumbnail"
+        />
+
+    <!-- Lesson Title -->
     <TextView
         android:id="@+id/lessonTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Lesson Title"
+        android:text="@string/lesson_title"
         android:textSize="16sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:layout_marginBottom="4dp" />
 
+    <!-- Lesson Description -->
     <TextView
         android:id="@+id/lessonDescription"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Lesson Description"
         android:textSize="14sp"
-        android:layout_marginTop="4dp" />
+        android:textColor="@color/gray"
+        android:layout_marginBottom="8dp" />
+
+    <!-- Separator -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/gray" />
 </LinearLayout>

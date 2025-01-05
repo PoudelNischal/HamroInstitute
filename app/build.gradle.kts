@@ -48,6 +48,9 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment:2.7.7")
     implementation("androidx.navigation:navigation-ui:2.7.7")
     implementation("com.squareup.picasso:picasso:2.71828")
+    implementation("com.google.android.material:material:1.9.0")
+    implementation("com.airbnb.android:lottie:6.1.0")
+
 
 
     implementation(libs.media3.exoplayer)

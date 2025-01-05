@@ -1,5 +1,8 @@
 package com.example.merainstitue;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -27,8 +30,7 @@ public class AccountFragment extends Fragment {
 
     private ImageView profileImageView;
     private TextView fullNameTextView, emailTextView, usernameTextView;
-    private Button logOutButton;
-//    private ProgressBar progressBar;
+    //    private ProgressBar progressBar;
 
     private FirebaseAuth firebaseAuth;
     private FirebaseFirestore firestore;
@@ -48,13 +50,26 @@ public class AccountFragment extends Fragment {
         fullNameTextView = rootView.findViewById(R.id.name);
         emailTextView = rootView.findViewById(R.id.userEmail);
         usernameTextView = rootView.findViewById(R.id.username);
-        logOutButton = rootView.findViewById(R.id.logOut);
+        Button logOutButton = rootView.findViewById(R.id.logOut);
 //        progressBar = rootView.findViewById(R.id.progressBar);
 
         // Set log out button listener
         logOutButton.setOnClickListener(v -> {
+            // Sign out from Firebase
             firebaseAuth.signOut();
-            // You might want to navigate to login screen after logout
+
+            // Clear any shared preferences related to login
+            SharedPreferences prefs = getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("isValidLogin", false);  // Mark login status as false
+            editor.apply();
+
+            // Redirect to the LoginActivity
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+
+            // Optionally, call finish() if you want to close the current activity and prevent going back to the logged-in screen
+            getActivity().finish();
         });
 
         // Fetch user data when the fragment is created

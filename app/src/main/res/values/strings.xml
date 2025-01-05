@@ -8,4 +8,7 @@
     <string name="api_key">175625128133282</string>
     <string name="api_secret">aDKulR0TQOvEHeiSET7MKMFIzBQ</string>
     <string name="img">img</string>
+    <string name="image_thumbnail">Image thumbnail</string>
+    <string name="lesson_title">Lesson Title</string>
+    <string name="courses_for_you">Courses for you :</string>
 </resources>

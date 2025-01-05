@@ -10,6 +10,7 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.merainstitue.LessonActivity;
 import com.example.merainstitue.R;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class LessonAdapter extends RecyclerView.Adapter<LessonAdapter.LessonView
 
     private final List<Lesson> lessonList;
 
-    public LessonAdapter(List<Lesson> lessonList) {
+    public LessonAdapter(LessonActivity lessonActivity, List<Lesson> lessonList) {
         this.lessonList = lessonList;
     }
 

@@ -108,7 +108,7 @@ public class LessonActivity extends AppCompatActivity {
         lessonsRecyclerView = findViewById(R.id.lessonsRecyclerView);
         lessonsRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         lessonList = new ArrayList<>();
-        lessonAdapter = new LessonAdapter(lessonList);
+        lessonAdapter = new LessonAdapter(this, lessonList);
         lessonsRecyclerView.setAdapter(lessonAdapter);
 
         // Fetch lessons from Firestore

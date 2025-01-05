@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,46 +27,66 @@ public class MediaActivity extends Fragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Make the activity full screen (hide status bar and navigation bar)
-        getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        if (getActivity() != null) {
+            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+        }
 
         // Set the requested orientation to landscape (if needed)
-        getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        if (getActivity() != null) {
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
 
         View view = inflater.inflate(R.layout.fragment_media_activity, container, false);
         playerView = view.findViewById(R.id.player_view);
         backButton = view.findViewById(R.id.back_button);
         videoTitle = view.findViewById(R.id.video_title);
 
-        // Set video title dynamically (you can replace this with the actual video title)
-        String title = getActivity().getIntent().getStringExtra("video_title");
-        videoTitle.setText(title);
+        // Set video title dynamically (replace with the actual video title)
+        if (getArguments() != null) {
+            String title = getArguments().getString("LESSON_TITLE");
+            videoTitle.setText(title);
+        }
 
-        // Initialize ExoPlayer
+        // Initialize ExoPlayer using Media3 package
         player = new ExoPlayer.Builder(requireContext()).build();
         playerView.setPlayer(player);
 
-        // Load video
-        MediaItem mediaItem = MediaItem.fromUri("https://samplelib.com/lib/preview/mp4/sample-5s.mp4");
-        player.setMediaItem(mediaItem);
-        player.prepare();
-        player.play();
+        // Retrieve video URL passed from previous activity (or fragment)
+        if (getArguments() != null) {
+            String videoUrl = getArguments().getString("VIDEO_URL");
+            if (videoUrl != null) {
+                // Load video using Media3
+                MediaItem mediaItem = MediaItem.fromUri(videoUrl);
+                player.setMediaItem(mediaItem);
+                player.prepare();
+                player.play();
+            } else {
+                // Handle case where video URL is missing
+                Toast.makeText(requireContext(), "Error: No video URL found.", Toast.LENGTH_SHORT).show();
+            }
+        }
 
         // Set up back button to handle click
         backButton.setOnClickListener(v -> {
             // Exit full-screen mode and show the system UI (status bar and navigation bar)
-            getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            if (getActivity() != null) {
+                getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            }
 
-            // Show bottom navigation again
-            if (getActivity() instanceof MainActivity) {
-                ((MainActivity) getActivity()).showBottomNavigation();
+            // Return to normal orientation (portrait mode, if needed)
+            if (getActivity() != null) {
+                getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             }
 
             // Navigate back to the previous fragment or activity
-            getActivity().onBackPressed();
+            if (getActivity() != null) {
+                getActivity().onBackPressed();
+            }
         });
 
         return view;
     }
+
 
     @Override
     public void onDestroyView() {

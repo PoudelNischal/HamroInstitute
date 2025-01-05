@@ -2,9 +2,29 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/fragment_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:ndroid="http://schemas.android.com/tools"
     android:background="@color/white">
+
+    <!-- Header with Back Button and Add Lesson Button -->
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:elevation="4dp"
+        android:padding="8dp">
+
+        <TextView
+            android:id="@+id/toolbarTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="18sp" />
+
+    </androidx.appcompat.widget.Toolbar>
 
     <!-- ScrollView for the content -->
     <ScrollView
@@ -110,31 +130,4 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
-
-    <!-- Start Button and other UI elements at the bottom -->
-
-    <TextView
-        android:layout_width="120dp"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom|start"
-        android:layout_marginBottom="16dp"
-        android:text="Lesson Title Here"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:textAllCaps="false"
-        android:textColor="#000"
-        android:layout_marginHorizontal="15dp" />
-
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/login_button"
-        android:layout_width="120dp"
-        android:layout_height="48dp"
-        android:layout_gravity="bottom|end"
-        android:layout_marginBottom="16dp"
-        android:backgroundTint="#141414"
-        android:text="Start"
-        android:textAllCaps="false"
-        android:textColor="#fff"
-        android:layout_marginHorizontal="15dp"
-        app:cornerRadius="8dp" />
 </FrameLayout>

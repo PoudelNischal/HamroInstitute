@@ -56,7 +56,11 @@ public class MainActivity extends AppCompatActivity {
 
 
     private void setupBottomNavigation() {
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        String userRole = prefs.getString("userRole", "student"); // Default to "student" if not set
 
+        // Check if the user is a teacher and only then show the "Courses" tab
+        binding.bottomNavigationView2.getMenu().findItem(R.id.course).setVisible(userRole.equals("teacher"));
 
         binding.bottomNavigationView2.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
@@ -74,11 +78,12 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.account) {
                 replaceFragment(new AccountFragment());
                 return true;
-            }else {
+            } else {
                 return false;
             }
         });
     }
+
 
 
     private void replaceFragment(Fragment fragment) {
