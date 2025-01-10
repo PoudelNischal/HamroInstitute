@@ -201,4 +201,3 @@ public class PaymentActivity extends AppCompatActivity {
     }
 }
 
-using 21 version
