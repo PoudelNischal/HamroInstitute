@@ -41,17 +41,29 @@ android {
 }
 
 dependencies {
-
     implementation("com.cloudinary:cloudinary-android:3.0.2")
     implementation("com.github.bumptech.glide:glide:4.16.0")
-    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
-    implementation("androidx.navigation:navigation-fragment:2.7.7")
-    implementation("androidx.navigation:navigation-ui:2.7.7")
+    implementation("androidx.constraintlayout:constraintlayout:2.2.0")
+    implementation("androidx.navigation:navigation-fragment:2.8.5")
+    implementation("androidx.navigation:navigation-ui:2.8.5")
     implementation("com.squareup.picasso:picasso:2.71828")
-    implementation("com.google.android.material:material:1.9.0")
-    implementation("com.airbnb.android:lottie:6.1.0")
+    implementation("com.google.android.material:material:1.12.0")
+    implementation("com.airbnb.android:lottie:6.6.2")
 
+//    Google Play and payment intregation
+    implementation("com.google.android.gms:play-services-wallet:19.4.0")
+    implementation("com.google.android.gms:play-services-pay:16.5.0")
+    implementation("com.android.billingclient:billing:7.1.1")
+    implementation("com.google.android.gms:play-services-base:18.5.0")
 
+    implementation("com.stripe:stripe-android:21.3.0")
+    implementation("com.stripe:stripe-java:28.2.0")
+
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.google.code.gson:gson:2.8.8")
+
+    implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
     implementation(libs.media3.exoplayer)
     implementation(libs.media3.exoplayer.dash)
@@ -63,8 +75,9 @@ dependencies {
 
     // Firebase dependencies
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0") // KTX version for Firebase Authentication
-    implementation("com.google.firebase:firebase-firestore-ktx:25.1.1") // KTX version for Firestore
-    implementation("com.google.firebase:firebase-database-ktx:21.0.0") // KTX version for Realtime Database
+    implementation("com.google.firebase:firebase-firestore-ktx:25.1.1") // KTX version for Firestorm
+    implementation("com.google.firebase:firebase-database-ktx:21.0.0")
+    implementation(libs.firebase.messaging) // KTX version for Realtime Database
 
 
     testImplementation(libs.junit)

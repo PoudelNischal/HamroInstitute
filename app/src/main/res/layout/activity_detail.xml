@@ -23,10 +23,9 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:textSize="18sp" />
-
     </androidx.appcompat.widget.Toolbar>
 
-    <!-- ScrollView for the content -->
+    <!-- ScrollView for the content (without Buy Button) -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -128,6 +127,20 @@
                 android:orientation="vertical">
                 <!-- Dynamic lessons will be added here -->
             </LinearLayout>
+
         </LinearLayout>
     </ScrollView>
+
+    <!-- Buy Button outside of the ScrollView -->
+    <Button
+        android:id="@+id/btnBuyCourse"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Buy Course"
+        android:layout_gravity="bottom"
+        android:textColor="@android:color/white"
+        android:background="@color/colorPrimary"
+        android:layout_alignParentBottom="true"
+        android:layout_marginTop="24dp"
+        android:padding="16dp"/>
 </FrameLayout>

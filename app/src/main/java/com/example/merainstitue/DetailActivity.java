@@ -15,14 +15,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-
-import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity {
 
@@ -37,20 +32,26 @@ public class DetailActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         lessonsContainer = findViewById(R.id.lessonsContainer);
 
-
-
         // Retrieve intent extras
         String title = getIntent().getStringExtra("title");
         String subtitle = getIntent().getStringExtra("subtitle");
         int progress = getIntent().getIntExtra("progress", 0);
         String lessons = getIntent().getStringExtra("lessons");
         String courseId = getIntent().getStringExtra("courseId");
+        double price = getIntent().getDoubleExtra("price", 0.0); // Add price
 
+        // Set course data to views
         ((TextView) findViewById(R.id.detailTitle)).setText(title);
         ((TextView) findViewById(R.id.detailSubtitle)).setText(subtitle);
         ((ProgressBar) findViewById(R.id.detailProgress)).setProgress(progress);
         ((TextView) findViewById(R.id.detailLessons)).setText(lessons);
 
+        // Set up the Buy Course button
+        findViewById(R.id.btnBuyCourse).setOnClickListener(v -> {
+            navigateToPayment(courseId, title, subtitle, price);
+        });
+
+        // Fetch lessons
         fetchLessons(courseId);
     }
 
@@ -86,11 +87,6 @@ public class DetailActivity extends AppCompatActivity {
         TextView lessonDescriptionView = lessonView.findViewById(R.id.lessonDescription);
         ImageView lessonImage = lessonView.findViewById(R.id.lessonThumbnail);
 
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> onBackPressed());
-
         lessonTitleView.setText(lessonTitle);
         lessonDescriptionView.setText(lessonDescription);
 
@@ -102,27 +98,20 @@ public class DetailActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("DetailActivity", "Error decoding thumbnail: ", e);
             }
-        } else {
-            lessonImage.setImageResource(R.drawable.ic_image); // Placeholder image
         }
 
-        // Set the click listener for each lesson item
-        lessonView.setOnClickListener(v -> {
-            // Create the MediaActivity fragment and pass data to it
-            MediaActivity mediaFragment = new MediaActivity();
-            Bundle bundle = new Bundle();
-            bundle.putString("VIDEO_URL", videoUrl);
-            bundle.putString("LESSON_TITLE", lessonTitle);
-            mediaFragment.setArguments(bundle);
-
-            // Replace the current container with the MediaActivity fragment
-            FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment_container, mediaFragment);
-            transaction.addToBackStack(null); // Add fragment to back stack so the user can navigate back
-            transaction.commit();
-        });
-
-        // Add the lesson view to the container
         lessonsContainer.addView(lessonView);
+    }
+
+    private void navigateToPayment(String courseId, String title, String subtitle, double price) {
+        Intent intent = new Intent(DetailActivity.this, PaymentActivity.class);
+
+        // Pass the course data to the PaymentActivity
+        intent.putExtra("courseId", courseId);
+        intent.putExtra("courseTitle", title);
+        intent.putExtra("courseSubtitle", subtitle);
+        intent.putExtra("coursePrice", price);  // Pass price
+
+        startActivity(intent);
     }
 }
