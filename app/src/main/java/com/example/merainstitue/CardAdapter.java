@@ -60,6 +60,7 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.ViewHolder> {
             intent.putExtra("courseId", cardItem.getId()); // courseId of the course
             intent.putExtra("title", cardItem.getTitle());
             intent.putExtra("subtitle", cardItem.getDescription());
+            intent.putExtra("teacherId" , cardItem.getTeacherId());
             intent.putExtra("progress", cardItem.getLessonCount());
             intent.putExtra("completionStatus", "In Progress"); // Example logic for completion status
             intent.putExtra("duration", "N/A"); // Add actual duration logic if needed

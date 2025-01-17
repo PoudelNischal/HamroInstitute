@@ -61,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Check if the user is a teacher and only then show the "Courses" tab
         binding.bottomNavigationView2.getMenu().findItem(R.id.course).setVisible(userRole.equals("teacher"));
+        binding.bottomNavigationView2.getMenu().findItem(R.id.courses).setVisible(userRole.equals("student"));
 
         binding.bottomNavigationView2.setOnItemSelectedListener(item -> {
             if (item.getItemId() == R.id.home) {
@@ -72,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             } else if (item.getItemId() == R.id.search) {
                 replaceFragment(new SearchFragment());
                 return true;
-            } else if (item.getItemId() == R.id.message) {
+            } else if (item.getItemId() == R.id.courses) {
                 replaceFragment(new MessageFragment());
                 return true;
             } else if (item.getItemId() == R.id.account) {

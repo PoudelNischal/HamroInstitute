@@ -2,22 +2,28 @@ package com.example.merainstitue;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.merainstitue.utils.FCMTokenManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import android.app.NotificationManager;
+import android.content.pm.PackageManager;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private Button loginButton, signupButton; // Buttons for login and signup
-    private EditText emailEditText, passwordEditText; // Input fields
+    private Button loginButton, signupButton;
+    private EditText emailEditText, passwordEditText;
     private FirebaseAuth mAuth;
+
+    private static final int NOTIFICATION_PERMISSION_REQUEST_CODE = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +48,11 @@ public class LoginActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.username);
         passwordEditText = findViewById(R.id.password);
 
+        // Request notification permission
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestNotificationPermission();
+        }
+
         // Signup button click listener
         signupButton.setOnClickListener(v -> {
             Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
@@ -51,6 +62,32 @@ public class LoginActivity extends AppCompatActivity {
 
         // Login button click listener
         loginButton.setOnClickListener(v -> loginUser());
+    }
+
+    private void requestNotificationPermission() {
+        // Check if permission is already granted
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.POST_NOTIFICATIONS)
+                != PackageManager.PERMISSION_GRANTED) {
+            // Request permission
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, NOTIFICATION_PERMISSION_REQUEST_CODE);
+        } else {
+            // Permission already granted
+            getFCMToken();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == NOTIFICATION_PERMISSION_REQUEST_CODE) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // Permission granted
+                getFCMToken();
+            } else {
+                // Permission denied, handle accordingly
+                Toast.makeText(this, "Notification permission denied", Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
     private void loginUser() {
@@ -73,18 +110,16 @@ public class LoginActivity extends AppCompatActivity {
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        // Get the logged-in user's ID
                         String userId = mAuth.getCurrentUser().getUid();
 
                         // Fetch the user's role from Firestore
                         FirebaseFirestore.getInstance()
-                                .collection("users") // Replace "Users" with your Firestore collection name
+                                .collection("users")
                                 .document(userId)
                                 .get()
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
-                                        // Get the user's role
-                                        String role = documentSnapshot.getString("role"); // Assumes "role" field exists in Firestore
+                                        String role = documentSnapshot.getString("role");
 
                                         if (role != null) {
                                             // Save the role and login state in SharedPreferences
@@ -104,7 +139,6 @@ public class LoginActivity extends AppCompatActivity {
                                     }
                                 })
                                 .addOnFailureListener(e -> {
-                                    Log.e("LoginActivity", "Error fetching user role", e);
                                     Toast.makeText(LoginActivity.this, "Error fetching user data!", Toast.LENGTH_SHORT).show();
                                 });
                     } else {
@@ -114,10 +148,14 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-
     private void redirectToMainActivity() {
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
+    }
+
+    private void getFCMToken() {
+        // Call your existing method to retrieve the FCM token
+        FCMTokenManager.getFCMToken();
     }
 }

@@ -12,7 +12,7 @@
         android:layout_marginEnd="16dp"
         android:src="@drawable/ic_placeholder" />
 
-    <!-- Course Title and Description -->
+    <!-- Course Title, Description, and Total Purchases -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -40,6 +40,16 @@
             android:layout_height="wrap_content"
             android:text="Price"
             android:textSize="14sp" />
+
+        <!-- New field to show total purchases -->
+        <TextView
+            android:id="@+id/totalPurchases"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Purchases: 0"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_marginTop="4dp" />
 
         <!-- Separator between price and next content -->
         <View

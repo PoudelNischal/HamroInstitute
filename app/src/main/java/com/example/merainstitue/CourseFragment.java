@@ -74,10 +74,8 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
                                 String courseId = document.getId();  // This is the unique ID of the document
                                 Course course = document.toObject(Course.class);
                                 if (course != null) {
-                                    // Log the Base64 string (using the correct field name)
-                                    Log.d("CourseFragment", "Base64 image: " + course.getImageBase64());
-                                    course.setCourseId(courseId);
-                                    courseList.add(course);
+                                    // Fetch the total purchases for the course
+                                    fetchTotalPurchases(course, courseId);
                                 } else {
                                     Log.d("CourseFragment", "Course is null for document: " + document.getId());
                                 }
@@ -85,9 +83,28 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
                                 Log.e("CourseFragment", "Error parsing course", e);
                             }
                         }
-                        courseAdapter.notifyDataSetChanged();
                     } else {
                         Log.e("CourseFragment", "Error getting courses: " + task.getException());
+                    }
+                });
+    }
+
+    private void fetchTotalPurchases(Course course, String courseId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+
+        // Query the "purchases" collection to count how many purchases are made for this course
+        db.collection("userCourses")
+                .whereEqualTo("courseId", courseId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        int totalPurchases = task.getResult().size();  // Get the number of purchases for this course
+                        course.setTotalPurchases(totalPurchases);  // Set the total purchases for this course
+                        courseList.add(course);  // Add the course to the list
+                        courseAdapter.notifyDataSetChanged();  // Notify adapter to update UI
+                    } else {
+                        Log.e("CourseFragment", "Error fetching total purchases: " + task.getException());
                     }
                 });
     }
@@ -99,10 +116,9 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
 
     @Override
     public void onCourseClick(String courseId) {
-        Log.d("devs" , "id" + courseId);
         // Open the LessonActivity and pass the courseId
         Intent intent = new Intent(getContext(), LessonActivity.class);
-        intent.putExtra("COURSE_ID", courseId);  // Pass the courseId to the next activity
+        intent.putExtra("COURSE_ID", courseId);
         startActivity(intent);
     }
 }

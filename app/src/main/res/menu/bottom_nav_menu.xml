@@ -13,9 +13,9 @@
         android:icon="@drawable/baseline_search_24"
         android:id="@+id/search"
         />
-    <item android:title="Message"
-        android:icon="@drawable/baseline_message_24"
-        android:id="@+id/message"
+    <item android:title="Courses"
+        android:icon="@drawable/baseline_library_books_24"
+        android:id="@+id/courses"
         />
     <item android:title="Account"
         android:icon="@drawable/baseline_account_box_24"

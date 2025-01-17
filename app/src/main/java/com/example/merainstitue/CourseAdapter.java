@@ -36,24 +36,17 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
     public void onBindViewHolder(CourseViewHolder holder, int position) {
         Course course = courseList.get(position);
 
-        // Check if the views are not null
-        if (holder.courseTitle != null) {
-            holder.courseTitle.setText(course.getTitle());
-        } else {
-            Log.e("CourseAdapter", "courseTitle is null");
-        }
+        // Set the course title
+        holder.courseTitle.setText(course.getTitle());
 
-        if (holder.courseDescription != null) {
-            holder.courseDescription.setText(course.getDescription());
-        } else {
-            Log.e("CourseAdapter", "courseDescription is null");
-        }
+        // Set the course description
+        holder.courseDescription.setText(course.getDescription());
 
-        if (holder.coursePrice != null) {
-            holder.coursePrice.setText("Price: $" + course.getPrice());
-        } else {
-            Log.e("CourseAdapter", "coursePrice is null");
-        }
+        // Set the course price
+        holder.coursePrice.setText("Price: $" + course.getPrice());
+
+        // Display total purchases
+        holder.totalPurchases.setText("Total Purchases: " + course.getTotalPurchases());
 
         // Decode the base64 image string to Bitmap and set it to ImageView
         String base64Image = course.getImageBase64();
@@ -67,6 +60,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
                 holder.courseThumbnail.setImageBitmap(decodedByte);
             } catch (Exception e) {
                 holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);
+                Log.e("CourseAdapter", "Error decoding base64 image", e);
             }
         } else {
             holder.courseThumbnail.setImageResource(R.drawable.ic_placeholder);
@@ -89,6 +83,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         public TextView courseTitle;
         public TextView courseDescription;
         public TextView coursePrice;
+        public TextView totalPurchases;
         public ImageView courseThumbnail;
 
         public CourseViewHolder(View view) {
@@ -96,6 +91,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             courseTitle = view.findViewById(R.id.courseTitle);
             courseDescription = view.findViewById(R.id.courseDescription);
             coursePrice = view.findViewById(R.id.coursePrice);
+            totalPurchases = view.findViewById(R.id.totalPurchases);
             courseThumbnail = view.findViewById(R.id.courseThumbnail);
         }
     }

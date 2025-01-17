@@ -4,28 +4,9 @@
     android:layout_height="match_parent"
     android:id="@+id/fragment_container"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ndroid="http://schemas.android.com/tools"
     android:background="@color/white">
 
-    <!-- Header with Back Button and Add Lesson Button -->
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:elevation="4dp"
-        android:padding="8dp">
-
-        <TextView
-            android:id="@+id/toolbarTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="18sp" />
-    </androidx.appcompat.widget.Toolbar>
-
-    <!-- ScrollView for the content (without Buy Button) -->
+    <!-- ScrollView for the content -->
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -35,6 +16,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                android:padding="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
 
             <!-- Course Header -->
             <RelativeLayout
@@ -65,73 +57,19 @@
                     android:textSize="14sp" />
             </RelativeLayout>
 
-            <!-- Progress Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:id="@+id/detailCompletionStatus"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Finished X of Y Lessons"
-                    android:textSize="14sp" />
-
-                <ProgressBar
-                    android:id="@+id/detailProgress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:max="100"
-                    android:progress="50"
-                    style="?android:attr/progressBarStyleHorizontal" />
-            </LinearLayout>
-
-            <!-- Duration and Lessons -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <TextView
-                    android:id="@+id/detailDuration"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:background="@drawable/rounded_bg_orange"
-                    android:padding="8dp"
-                    android:text="9h 32min"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
-
-                <TextView
-                    android:id="@+id/detailLessons"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/rounded_bg_blue"
-                    android:padding="8dp"
-                    android:text="24 Lessons"
-                    android:textColor="@android:color/white"
-                    android:textSize="12sp" />
-            </LinearLayout>
-
-            <!-- Lessons List (dynamically populated) -->
+            <!-- Lessons List -->
             <LinearLayout
                 android:id="@+id/lessonsContainer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:orientation="vertical">
-                <!-- Dynamic lessons will be added here -->
             </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
 
-    <!-- Buy Button outside of the ScrollView -->
+    <!-- Buy Button -->
     <Button
         android:id="@+id/btnBuyCourse"
         android:layout_width="match_parent"
@@ -140,7 +78,5 @@
         android:layout_gravity="bottom"
         android:textColor="@android:color/white"
         android:background="@color/colorPrimary"
-        android:layout_alignParentBottom="true"
-        android:layout_marginTop="24dp"
         android:padding="16dp"/>
 </FrameLayout>

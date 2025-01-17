@@ -1,16 +1,15 @@
 package com.example.merainstitue;
 
-import java.util.List;
-
 public class Course {
+
     private String courseId;
     private String title;
     private String description;
-    private List<String> tags;
     private String imageBase64;
-    private double price; // New field for price
+    private Double price;
+    private int totalPurchases;
 
-    // Getters and setters
+    // Getters and Setters
     public String getCourseId() {
         return courseId;
     }
@@ -35,14 +34,6 @@ public class Course {
         this.description = description;
     }
 
-    public List<String> getTags() {
-        return tags;
-    }
-
-    public void setTags(List<String> tags) {
-        this.tags = tags;
-    }
-
     public String getImageBase64() {
         return imageBase64;
     }
@@ -51,11 +42,19 @@ public class Course {
         this.imageBase64 = imageBase64;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(Double price) {
         this.price = price;
+    }
+
+    public int getTotalPurchases() {
+        return totalPurchases;
+    }
+
+    public void setTotalPurchases(int totalPurchases) {
+        this.totalPurchases = totalPurchases;
     }
 }

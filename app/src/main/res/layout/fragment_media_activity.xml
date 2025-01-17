@@ -3,7 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MediaActivity">
+    tools:context=".MediaActivity"
+    android:background="@color/gray"
+    >
 
         <!-- Video Title -->
         <TextView
@@ -22,7 +24,8 @@
             android:id="@+id/player_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@id/video_title" />
+            android:background="@color/gray"
+            />
 
         <!-- Back Button -->
         <ImageButton

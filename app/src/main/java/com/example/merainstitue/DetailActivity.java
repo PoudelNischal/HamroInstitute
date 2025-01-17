@@ -8,14 +8,15 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -23,6 +24,11 @@ public class DetailActivity extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private LinearLayout lessonsContainer;
+    private Button btnBuyCourse;
+    private String courseId;
+    private String userId;
+
+    private String teacherId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,28 +37,52 @@ public class DetailActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         lessonsContainer = findViewById(R.id.lessonsContainer);
+        btnBuyCourse = findViewById(R.id.btnBuyCourse);
+
+        // Get current user ID
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Set up back button
+        ImageView btnBack = findViewById(R.id.btnBack);
+        btnBack.setOnClickListener(v -> finish());
 
         // Retrieve intent extras
         String title = getIntent().getStringExtra("title");
         String subtitle = getIntent().getStringExtra("subtitle");
-        int progress = getIntent().getIntExtra("progress", 0);
-        String lessons = getIntent().getStringExtra("lessons");
-        String courseId = getIntent().getStringExtra("courseId");
-        double price = getIntent().getDoubleExtra("price", 0.0); // Add price
+        courseId = getIntent().getStringExtra("courseId");
+        teacherId = getIntent().getStringExtra("teacherid");
+        double price = getIntent().getDoubleExtra("price", 0.0);
 
         // Set course data to views
         ((TextView) findViewById(R.id.detailTitle)).setText(title);
         ((TextView) findViewById(R.id.detailSubtitle)).setText(subtitle);
-        ((ProgressBar) findViewById(R.id.detailProgress)).setProgress(progress);
-        ((TextView) findViewById(R.id.detailLessons)).setText(lessons);
+
+        // Check if user has purchased the course
+        checkCoursePurchase();
 
         // Set up the Buy Course button
-        findViewById(R.id.btnBuyCourse).setOnClickListener(v -> {
-            navigateToPayment(courseId, title, subtitle, price);
+        btnBuyCourse.setOnClickListener(v -> {
+            navigateToPayment(courseId, title, subtitle, price , teacherId);
         });
 
         // Fetch lessons
         fetchLessons(courseId);
+    }
+
+    private void checkCoursePurchase() {
+        db.collection("UserCourses")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("courseId", courseId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // User has purchased the course
+                        btnBuyCourse.setVisibility(View.GONE);
+                    } else {
+                        // User hasn't purchased the course
+                        btnBuyCourse.setVisibility(View.VISIBLE);
+                    }
+                });
     }
 
     private void fetchLessons(String courseId) {
@@ -98,20 +128,54 @@ public class DetailActivity extends AppCompatActivity {
             } catch (Exception e) {
                 Log.e("DetailActivity", "Error decoding thumbnail: ", e);
             }
+        } else {
+            lessonImage.setImageResource(R.drawable.ic_image);
         }
+
+        // Set the click listener for each lesson item
+        lessonView.setOnClickListener(v -> {
+            checkLessonAccess(videoUrl, lessonTitle);
+        });
 
         lessonsContainer.addView(lessonView);
     }
 
-    private void navigateToPayment(String courseId, String title, String subtitle, double price) {
-        Intent intent = new Intent(DetailActivity.this, PaymentActivity.class);
+    private void checkLessonAccess(String videoUrl, String lessonTitle) {
+        db.collection("userCourses")
+                .whereEqualTo("userId", userId)
+                .whereEqualTo("courseId", courseId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // User has access to the course, show video
+                        showVideo(videoUrl, lessonTitle);
+                    } else {
+                        // User hasn't purchased the course
+                        Toast.makeText(this, "Please purchase the course to access this lesson", Toast.LENGTH_LONG).show();
+                    }
+                });
+    }
 
-        // Pass the course data to the PaymentActivity
+    private void showVideo(String videoUrl, String lessonTitle) {
+        MediaActivity mediaFragment = new MediaActivity();
+        Bundle bundle = new Bundle();
+        bundle.putString("VIDEO_URL", videoUrl);
+        bundle.putString("LESSON_TITLE", lessonTitle);
+        mediaFragment.setArguments(bundle);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, mediaFragment)
+                .addToBackStack(null)
+                .commit();
+    }
+
+    private void navigateToPayment(String courseId, String title, String subtitle, double price, String teacherId) {
+        Intent intent = new Intent(DetailActivity.this, PaymentActivity.class);
         intent.putExtra("courseId", courseId);
         intent.putExtra("courseTitle", title);
         intent.putExtra("courseSubtitle", subtitle);
-        intent.putExtra("coursePrice", price);  // Pass price
-
+        intent.putExtra("coursePrice", price);
+        intent.putExtra("teacherid", teacherId);
         startActivity(intent);
     }
 }

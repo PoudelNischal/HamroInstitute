@@ -15,4 +15,5 @@
     <string name="course_title">Course Title</string>
     <string name="course_description">Course Description</string>
     <string name="select_payment_method">Select Payment Method</string>
+    <string name="purchased_course">Purchased Course</string>
 </resources>

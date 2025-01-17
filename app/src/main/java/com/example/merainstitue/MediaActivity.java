@@ -23,12 +23,16 @@ public class MediaActivity extends Fragment {
     private ImageButton backButton;
     private TextView videoTitle;
 
+    private boolean isMediaPlaying = false; // Track media state
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         // Make the activity full screen (hide status bar and navigation bar)
         if (getActivity() != null) {
             getActivity().getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_FULLSCREEN | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+            // Set the background color to black when media is playing
+            getActivity().findViewById(R.id.fragment_container).setBackgroundColor(getResources().getColor(android.R.color.black));
         }
 
         // Set the requested orientation to landscape (if needed)
@@ -60,6 +64,7 @@ public class MediaActivity extends Fragment {
                 player.setMediaItem(mediaItem);
                 player.prepare();
                 player.play();
+                isMediaPlaying = true;  // Set media as playing
             } else {
                 // Handle case where video URL is missing
                 Toast.makeText(requireContext(), "Error: No video URL found.", Toast.LENGTH_SHORT).show();
@@ -87,13 +92,17 @@ public class MediaActivity extends Fragment {
         return view;
     }
 
-
     @Override
     public void onDestroyView() {
         super.onDestroyView();
         if (player != null) {
             player.release();
             player = null;
+        }
+
+        // Reset background color to default when leaving the media screen
+        if (getActivity() != null && !isMediaPlaying) {
+            getActivity().findViewById(R.id.fragment_container).setBackgroundColor(getResources().getColor(android.R.color.white));
         }
     }
 
@@ -108,7 +117,7 @@ public class MediaActivity extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        if (player != null) {
+        if (player != null && isMediaPlaying) {
             player.play();
         }
     }

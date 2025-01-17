@@ -7,14 +7,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.merainstitue.api.CreatePaymentIntentResponse;
 import com.example.merainstitue.api.PaymentIntentRequest;
 import com.example.merainstitue.api.StripeService;
+import com.example.merainstitue.utils.NotificationHelper;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.messaging.FirebaseMessaging;
 import com.stripe.android.PaymentConfiguration;
 import com.stripe.android.Stripe;
 import com.stripe.android.model.ConfirmPaymentIntentParams;
@@ -46,10 +47,15 @@ public class PaymentActivity extends AppCompatActivity {
     private String courseSubtitle;
     private double coursePrice;
 
+    private  NotificationHelper notificationHelper;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment);
+
+
+         notificationHelper = new NotificationHelper(this);
 
         Log.d(TAG, "Initializing payment activity");
 
@@ -103,7 +109,7 @@ public class PaymentActivity extends AppCompatActivity {
         StripeService service = retrofit.create(StripeService.class);
 
         // Use the course price and currency in the request
-        PaymentIntentRequest request = new PaymentIntentRequest((int) (coursePrice * 100), "usd");  // Price is in cents for Stripe
+        PaymentIntentRequest request = new PaymentIntentRequest((int) (coursePrice * 100), "aud");  // Price is in cents for Stripe
         service.createPaymentIntent(request).enqueue(new Callback<CreatePaymentIntentResponse>() {
             @Override
             public void onResponse(Call<CreatePaymentIntentResponse> call, Response<CreatePaymentIntentResponse> response) {
@@ -117,7 +123,7 @@ public class PaymentActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<CreatePaymentIntentResponse> call, Throwable t) {
+            public void onFailure(@NonNull Call<CreatePaymentIntentResponse> call, @NonNull Throwable t) {
                 Toast.makeText(PaymentActivity.this, "Network error occurred. Please check your connection.", Toast.LENGTH_LONG).show();
             }
         });
@@ -143,35 +149,31 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
-
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == PAYMENT_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                // Save data to Firebase and send notification
-                savePurchaseToFirebase();
+        if (resultCode == RESULT_OK) {
+            savePurchaseToFirebase();
 
-                // Redirect to the lesson page
-                Intent lessonIntent = new Intent(this, DetailActivity.class);
-                lessonIntent.putExtra("courseId", courseId);  // Pass course details
-                lessonIntent.putExtra("courseTitle", courseTitle);
-                startActivity(lessonIntent);
+            // Notify the user of success
+            Toast.makeText(this, "Payment Successful!", Toast.LENGTH_LONG).show();
 
-                Toast.makeText(this, "Payment Successful!", Toast.LENGTH_LONG).show();
-                finish();
-            } else if (resultCode == RESULT_CANCELED) {
-                Toast.makeText(this, "Payment Cancelled", Toast.LENGTH_LONG).show();
-                payButton.setEnabled(true);
-            } else {
-                Toast.makeText(this, "Payment Failed - Please try again", Toast.LENGTH_LONG).show();
-                payButton.setEnabled(true);
-            }
+            // Send a notification for the purchase
+            notificationHelper.showCoursePurchaseNotification(courseId, courseTitle, coursePrice);
+
+            // Finish this activity and return to the previous one
+            setResult(RESULT_OK); // Pass the success result back to the calling activity if needed
+            finish();
+        } else if (resultCode == RESULT_CANCELED) {
+            Toast.makeText(this, "Payment Cancelled", Toast.LENGTH_LONG).show();
+            payButton.setEnabled(true);
+        } else {
+            Toast.makeText(this, "Payment Failed - Please try again", Toast.LENGTH_LONG).show();
+            payButton.setEnabled(true);
         }
-
     }
+
 
     private void savePurchaseToFirebase() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -191,9 +193,6 @@ public class PaymentActivity extends AppCompatActivity {
                 .addOnFailureListener(e ->
                         Log.e(TAG, "Error adding purchase details to Firebase: ", e));
     }
-
-
-
 
     @Override
     protected void onDestroy() {

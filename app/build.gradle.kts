@@ -62,7 +62,10 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
     implementation("com.google.code.gson:gson:2.8.8")
+    implementation("com.google.firebase:firebase-messaging")
 
+
+    implementation(platform("com.google.firebase:firebase-bom:33.7.0"))
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
 
     implementation(libs.media3.exoplayer)
@@ -77,8 +80,8 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx:23.1.0") // KTX version for Firebase Authentication
     implementation("com.google.firebase:firebase-firestore-ktx:25.1.1") // KTX version for Firestorm
     implementation("com.google.firebase:firebase-database-ktx:21.0.0")
-    implementation(libs.firebase.messaging) // KTX version for Realtime Database
-
+implementation("com.google.firebase:firebase-messaging-ktx:24.1.0")
+    implementation("com.google.android.gms:play-services-safetynet:18.1.0")
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
