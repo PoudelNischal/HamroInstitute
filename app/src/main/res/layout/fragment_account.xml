@@ -1,167 +1,188 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     tools:context=".AccountFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="start"
-        android:padding="16dp"
-        android:background="@color/white">
+        android:padding="16dp">
 
-        <!-- Profile Image and Name Section -->
+        <!-- Profile Section -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- Profile Image -->
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_default_profile"
+                    android:layout_marginEnd="16dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/round_border"
+                    android:clipToOutline="true" />
+
+                <!-- User Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nischal Kumar"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="_@nischal"
+                        android:textSize="14sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/userEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="nischal@example.com"
+                        android:textSize="14sp"
+                        android:textColor="@color/wallet_holo_blue_light"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Settings Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Settings"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black" />
+
+        <!-- Notifications -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="start"
-            android:layout_marginBottom="16dp">
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical"
+          >
 
-            <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_default_profile"
-                android:scaleType="centerCrop"
-                android:background="@drawable/circular_background"
-                android:clipToOutline="true" />
-
-            <!-- User Name and Email Section -->
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="start"
-                android:paddingTop="8dp">
+                android:layout_weight="1"
+                android:text="Notifications"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
 
-                <!-- Full Name -->
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="loading..."
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="4dp" />
-
-                <!-- Username -->
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="loading..."
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Email -->
-                <TextView
-                    android:id="@+id/userEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="loading..."
-                    android:textSize="14sp"
-                    android:textColor="@color/black" />
-            </LinearLayout>
+            <Switch
+                android:id="@+id/notificationsSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
-        <!-- Divider line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/black" />
-
-        <!-- Contact Information Section -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Contact Information"
-            android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/contactEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="contact@domain.com"
-            android:textSize="16sp"
-            android:textColor="@color/gray"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Divider line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="24dp"
-            android:background="@color/gray" />
-
-        <!-- Action Buttons for Projects, Resume, Teams -->
+        <!-- Theme -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp"
+            >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dark Theme"
+                android:textSize="16sp"
+                android:textColor="@color/black" />
+
+            <Switch
+                android:id="@+id/themeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Action Buttons Section -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
             android:layout_marginTop="16dp">
 
             <Button
                 android:id="@+id/projectsBtn"
-                android:text="Projects"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:text="Projects"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:background="@drawable/button_background"
                 android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/resumeBtn"
-                android:text="Resume"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:text="Resume"
                 android:textColor="@color/white"
                 android:textSize="16sp"
+                android:background="@drawable/button_background"
                 android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/teamsBtn"
-                android:text="Teams"
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
+                android:text="Teams"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
-
+                android:textSize="16sp"
+                android:background="@drawable/button_background" />
         </LinearLayout>
 
+        <!-- Logout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logOut"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="#8B0000"
             android:text="Logout"
             android:textAllCaps="false"
-            android:textColor="#fff"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="@color/white"
+            android:layout_marginTop="24dp"
             app:cornerRadius="8dp" />
-
-        <!-- ProgressBar for loading -->
-<!--        <ProgressBar-->
-<!--            android:id="@+id/progressBar"-->
-<!--            android:layout_width="wrap_content"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_gravity="center"-->
-<!--            android:visibility="gone" />-->
     </LinearLayout>
-</FrameLayout>
+</ScrollView>

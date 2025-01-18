@@ -1,18 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <!-- Course Thumbnail Image -->
+    <!-- Course Thumbnail -->
     <ImageView
         android:id="@+id/courseThumbnail"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginEnd="16dp"
-        android:src="@drawable/ic_placeholder" />
+        android:layout_marginEnd="8dp"
+        android:contentDescription="Course Thumbnail"
+        android:scaleType="centerCrop" />
 
-    <!-- Course Title, Description, and Total Purchases -->
+    <!-- Course Info -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -24,40 +26,43 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Course Title"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textSize="16sp" />
+            android:ellipsize="end"
+            android:maxLines="1" />
 
         <TextView
             android:id="@+id/courseDescription"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Course Description"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:ellipsize="end"
+            android:maxLines="2" />
 
         <TextView
             android:id="@+id/coursePrice"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Price"
+            android:text="Price: $0.00"
             android:textSize="14sp" />
 
-        <!-- New field to show total purchases -->
         <TextView
             android:id="@+id/totalPurchases"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Total Purchases: 0"
-            android:textSize="14sp"
-            android:textColor="@android:color/holo_green_dark"
-            android:layout_marginTop="4dp" />
-
-        <!-- Separator between price and next content -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/gray"
-            android:layout_marginTop="8dp" />
-
+            android:textSize="14sp" />
     </LinearLayout>
 
+    <!-- Delete Button -->
+    <Button
+        android:id="@+id/deleteButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete"
+        android:textSize="14sp"
+        android:layout_marginStart="8dp"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:textColor="@android:color/white" />
 </LinearLayout>

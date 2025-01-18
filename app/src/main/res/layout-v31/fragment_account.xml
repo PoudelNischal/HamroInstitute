@@ -1,161 +1,157 @@
-<?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
     tools:context=".AccountFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:gravity="start"
-        android:padding="16dp"
-        android:background="@color/white">
+        android:padding="16dp">
 
-        <!-- Profile Image and Name Section -->
-        <LinearLayout
+        <!-- Profile Section -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="start"
-            android:layout_marginBottom="16dp">
-
-            <!-- Profile Image with rounded border -->
-            <ImageView
-                android:id="@+id/profileImage"
-                android:layout_width="90dp"
-                android:layout_height="90dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_default_profile"
-                android:scaleType="centerCrop"
-                android:layout_marginEnd="16dp"
-                android:clipToOutline="true"
-                android:outlineProvider="background" />
-
-            <!-- User Name and Email Section -->
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:gravity="start"
-                android:paddingTop="8dp">
-
-                <!-- Full Name -->
-                <TextView
-                    android:id="@+id/name"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Nischal Kumar"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="4dp" />
-
-                <!-- Username -->
-                <TextView
-                    android:id="@+id/username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="_@nischal_dev"
-                    android:textSize="16sp"
-                    android:textColor="@color/black"
-                    android:layout_marginBottom="8dp" />
-
-                <!-- Email -->
-                <TextView
-                    android:id="@+id/userEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="nischal.dev@example.com"
-                    android:textSize="14sp"
-                    android:textColor="@color/black" />
-            </LinearLayout>
-        </LinearLayout>
-
-        <!-- Divider line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
             android:layout_marginBottom="16dp"
-            android:background="@color/black" />
+            app:cardCornerRadius="12dp"
+            app:cardElevation="4dp">
 
-        <!-- Contact Information Section -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:padding="16dp">
+
+                <!-- Profile Image -->
+                <ImageView
+                    android:id="@+id/profileImage"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:src="@drawable/ic_default_profile"
+                    android:layout_marginEnd="16dp"
+                    android:scaleType="centerCrop"
+                    android:background="@drawable/round_border"
+                    android:clipToOutline="true" />
+
+                <!-- User Info -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:gravity="center_vertical">
+
+                    <TextView
+                        android:id="@+id/name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Nischal"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:layout_marginBottom="4dp" />
+
+                    <TextView
+                        android:id="@+id/username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="_@nischal"
+                        android:textSize="14sp"
+                        android:textColor="@color/gray"
+                        android:layout_marginBottom="8dp" />
+
+                    <TextView
+                        android:id="@+id/userEmail"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="nischal@example.com"
+                        android:textSize="14sp"
+                        android:textColor="@color/wallet_holo_blue_light"
+                        android:clickable="true"
+                        android:focusable="true" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Settings Section -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Contact Information"
+            android:text="Settings"
             android:textSize="18sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="12dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp"
+            />
 
-        <TextView
-            android:id="@+id/contactEmail"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="contact@domain.com"
-            android:textSize="16sp"
-            android:textColor="@color/gray"
-            android:layout_marginBottom="24dp" />
-
-        <!-- Divider line -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginBottom="24dp"
-            android:background="@color/gray" />
-
-        <!-- Action Buttons for Projects, Resume, Teams -->
+        <!-- Notifications -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginTop="16dp">
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical">
 
-            <Button
-                android:id="@+id/projectsBtn"
-                android:text="Projects"
+            <TextView
                 android:layout_width="0dp"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:textColor="@color/white"
+                android:text="Notifications"
                 android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
+                />
 
-            <Button
-                android:id="@+id/resumeBtn"
-                android:text="Resume"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:textSize="16sp"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/teamsBtn"
-                android:text="Teams"
-                android:layout_width="0dp"
-                android:layout_height="48dp"
-                android:layout_weight="1"
-                android:textColor="@color/white"
-                android:textSize="16sp" />
-
+            <Switch
+                android:id="@+id/notificationsSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
 
+        <!-- Theme -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingVertical="12dp"
+            android:gravity="center_vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Dark Theme"
+                android:textSize="16sp"
+                />
+
+            <Switch
+                android:id="@+id/themeSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+
+        <!-- Change Password Button -->
+        <TextView
+            android:layout_marginTop="10dp"
+            android:layout_width="match_parent"
+            android:paddingTop="7dp"
+            android:id="@+id/changePasswordButton"
+            android:paddingBottom="7dp"
+            android:layout_height="wrap_content"
+            android:text="Change Password"
+            android:textSize="16sp"
+            />
+
+        <!-- Logout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logOut"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginBottom="16dp"
-            android:backgroundTint="#8B0000"
             android:text="Logout"
             android:textAllCaps="false"
-            android:textColor="#fff"
+            android:backgroundTint="@color/design_default_color_error"
+            android:textColor="@color/white"
+            android:layout_marginTop="24dp"
             app:cornerRadius="8dp" />
     </LinearLayout>
-</FrameLayout>
+</ScrollView>

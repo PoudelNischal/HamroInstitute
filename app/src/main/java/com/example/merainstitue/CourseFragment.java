@@ -92,8 +92,7 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
     private void fetchTotalPurchases(Course course, String courseId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-
-        // Query the "purchases" collection to count how many purchases are made for this course
+        // Query the "userCourses" collection to count how many purchases are made for this course
         db.collection("userCourses")
                 .whereEqualTo("courseId", courseId)
                 .get()
@@ -121,4 +120,56 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
         intent.putExtra("COURSE_ID", courseId);
         startActivity(intent);
     }
+
+    @Override
+    public void onDeleteCourseClick(String courseId) {
+        // Show confirmation dialog for deleting the course
+        new android.app.AlertDialog.Builder(requireContext())
+                .setTitle("Delete Course")
+                .setMessage("Are you sure you want to delete this course?")
+                .setPositiveButton("Yes", (dialog, which) -> deleteCourse(courseId))
+                .setNegativeButton("No", null)
+                .show();
+    }
+
+    private void deleteCourse(String courseId) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Query the Courses collection to find the document with the matching courseId
+        db.collection("Courses")
+                .whereEqualTo("courseId", courseId)
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
+                        // Get the first document where the courseId matches
+                        QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
+                        String documentId = document.getId();  // Get the document ID
+
+                        // Now delete the document using the document ID
+                        db.collection("Courses")
+                                .document(documentId)
+                                .delete()
+                                .addOnCompleteListener(deleteTask -> {
+                                    if (deleteTask.isSuccessful()) {
+                                        Log.d("DeleteCourse", "Course deleted successfully.");
+                                        Toast.makeText(getContext(), "Course deleted successfully", Toast.LENGTH_SHORT).show();
+                                        // Remove course from local list
+                                        for (Course course : courseList) {
+                                            if (course.getCourseId().equals(courseId)) {
+                                                courseList.remove(course);
+                                                break;
+                                            }
+                                        }
+                                        courseAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the RecyclerView
+                                    } else {
+                                        Log.e("DeleteCourse", "Error deleting course", deleteTask.getException());
+                                    }
+                                });
+                    } else {
+                        Log.e("DeleteCourse", "No matching course found.");
+                    }
+                });
+    }
+
+
 }

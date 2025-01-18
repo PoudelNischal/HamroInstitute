@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Button;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,6 +72,13 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
                 onCourseClickListener.onCourseClick(course.getCourseId());
             }
         });
+
+        // Delete Button click listener
+        holder.deleteButton.setOnClickListener(v -> {
+            if (onCourseClickListener != null) {
+                onCourseClickListener.onDeleteCourseClick(course.getCourseId());
+            }
+        });
     }
 
     @Override
@@ -85,6 +93,7 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
         public TextView coursePrice;
         public TextView totalPurchases;
         public ImageView courseThumbnail;
+        public Button deleteButton;
 
         public CourseViewHolder(View view) {
             super(view);
@@ -93,11 +102,13 @@ public class CourseAdapter extends RecyclerView.Adapter<CourseAdapter.CourseView
             coursePrice = view.findViewById(R.id.coursePrice);
             totalPurchases = view.findViewById(R.id.totalPurchases);
             courseThumbnail = view.findViewById(R.id.courseThumbnail);
+            deleteButton = view.findViewById(R.id.deleteButton);
         }
     }
 
-    // Interface to handle course click events
+    // Interface for handling course click events
     public interface OnCourseClickListener {
         void onCourseClick(String courseId);
+        void onDeleteCourseClick(String courseId);
     }
 }

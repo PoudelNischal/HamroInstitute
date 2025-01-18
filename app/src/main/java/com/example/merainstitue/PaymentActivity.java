@@ -102,7 +102,7 @@ public class PaymentActivity extends AppCompatActivity {
 
     private void getClientSecretFromServer() {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.0.2.2:3000/")
+                .baseUrl("https://hamra-be.onrender.com")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
