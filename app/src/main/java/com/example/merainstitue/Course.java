@@ -8,6 +8,15 @@ public class Course {
     private String imageBase64;
     private Double price;
     private int totalPurchases;
+    private String firestoreId;
+
+    public void setFirestoreId(String firestoreId) {
+        this.firestoreId = firestoreId;
+    }
+
+    public String getFirestoreId() {
+        return firestoreId;
+    }
 
     // Getters and Setters
     public String getCourseId() {

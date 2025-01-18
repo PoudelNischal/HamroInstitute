@@ -82,9 +82,17 @@ public class LessonActivity extends AppCompatActivity {
             }
         });
 
+        // Set up the toolbar
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
+
+        // Set "Lessons" as the title
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Lessons");
+
+        // Enable back navigation
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        // Set back navigation behavior
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
 
         cloudinary = new Cloudinary(ObjectUtils.asMap(
@@ -100,6 +108,7 @@ public class LessonActivity extends AppCompatActivity {
 
         // Get courseId from intent
         courseId = getIntent().getStringExtra("COURSE_ID");
+        Log.e("courses",courseId);
 
         Button uploadVideoButton = findViewById(R.id.uploadVideoButton);
         Button saveLessonButton = findViewById(R.id.saveLessonButton);
@@ -163,18 +172,20 @@ public class LessonActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
+                        Log.d(TAG, "Fetched lessons successfully.");
                         QuerySnapshot documentSnapshots = task.getResult();
                         if (documentSnapshots != null) {
+                            Log.d(TAG, "Number of lessons: " + documentSnapshots.size());
                             List<Lesson> lessons = documentSnapshots.toObjects(Lesson.class);
-                            Log.d(TAG, "Fetched lessons: " + lessons.size());
                             lessonList.clear();
                             lessonList.addAll(lessons);
-                            lessonAdapter.notifyDataSetChanged(); // Update the RecyclerView
+                            lessonAdapter.notifyDataSetChanged();
                         }
                     } else {
-                        Log.e(TAG, "Error getting lessons", task.getException());
+                        Log.e(TAG, "Error fetching lessons", task.getException());
                     }
                 });
+
     }
 
 

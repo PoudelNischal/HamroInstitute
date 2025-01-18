@@ -28,6 +28,7 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
 
     private List<Course> courseList;
     private CourseAdapter courseAdapter;
+    private static final String TAG = "CourseFragment";
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,7 +44,7 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
         RecyclerView coursesRecyclerView = view.findViewById(R.id.coursesRecyclerView);
         coursesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         courseList = new ArrayList<>();
-        courseAdapter = new CourseAdapter(courseList, this); // Pass the click listener to the adapter
+        courseAdapter = new CourseAdapter(courseList, this);
         coursesRecyclerView.setAdapter(courseAdapter);
 
         // Check user authentication
@@ -51,7 +52,7 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
         if (user != null) {
             fetchCourses(user.getUid());
         } else {
-            Log.e("CourseFragment", "User is not authenticated");
+            Log.e(TAG, "User is not authenticated");
             Toast.makeText(getContext(), "Please log in to view your courses.", Toast.LENGTH_SHORT).show();
         }
 
@@ -62,7 +63,6 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
     private void fetchCourses(String currentUserId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Access the "Courses" collection in Firestore
         db.collection("Courses")
                 .get()
                 .addOnCompleteListener(task -> {
@@ -70,21 +70,23 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
                         courseList.clear();
                         for (QueryDocumentSnapshot document : task.getResult()) {
                             try {
-                                // Parse course from document
-                                String courseId = document.getId();  // This is the unique ID of the document
+                                String firestoreId = document.getId();
                                 Course course = document.toObject(Course.class);
                                 if (course != null) {
-                                    // Fetch the total purchases for the course
-                                    fetchTotalPurchases(course, courseId);
+                                    course.setFirestoreId(firestoreId);
+                                    fetchTotalPurchases(course, course.getCourseId());
                                 } else {
-                                    Log.d("CourseFragment", "Course is null for document: " + document.getId());
+                                    Log.d(TAG, "Course is null for document: " + firestoreId);
                                 }
                             } catch (Exception e) {
-                                Log.e("CourseFragment", "Error parsing course", e);
+                                Log.e(TAG, "Error parsing course", e);
                             }
                         }
                     } else {
-                        Log.e("CourseFragment", "Error getting courses: " + task.getException());
+                        Log.e(TAG, "Error getting courses: ", task.getException());
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Error fetching courses", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
@@ -92,18 +94,17 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
     private void fetchTotalPurchases(Course course, String courseId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Query the "userCourses" collection to count how many purchases are made for this course
         db.collection("userCourses")
                 .whereEqualTo("courseId", courseId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-                        int totalPurchases = task.getResult().size();  // Get the number of purchases for this course
-                        course.setTotalPurchases(totalPurchases);  // Set the total purchases for this course
-                        courseList.add(course);  // Add the course to the list
-                        courseAdapter.notifyDataSetChanged();  // Notify adapter to update UI
+                        int totalPurchases = task.getResult().size();
+                        course.setTotalPurchases(totalPurchases);
+                        courseList.add(course);
+                        courseAdapter.notifyDataSetChanged();
                     } else {
-                        Log.e("CourseFragment", "Error fetching total purchases: " + task.getException());
+                        Log.e(TAG, "Error fetching total purchases: ", task.getException());
                     }
                 });
     }
@@ -115,61 +116,55 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
 
     @Override
     public void onCourseClick(String courseId) {
-        // Open the LessonActivity and pass the courseId
-        Intent intent = new Intent(getContext(), LessonActivity.class);
-        intent.putExtra("COURSE_ID", courseId);
-        startActivity(intent);
+        for (Course course : courseList) {
+            if (course.getCourseId().equals(courseId)) {
+                Intent intent = new Intent(getContext(), LessonActivity.class);
+                intent.putExtra("COURSE_ID", course.getFirestoreId());
+                startActivity(intent);
+                break;
+            }
+        }
     }
 
     @Override
     public void onDeleteCourseClick(String courseId) {
-        // Show confirmation dialog for deleting the course
-        new android.app.AlertDialog.Builder(requireContext())
+        if (getContext() == null) return;
+
+        new android.app.AlertDialog.Builder(getContext())
                 .setTitle("Delete Course")
                 .setMessage("Are you sure you want to delete this course?")
-                .setPositiveButton("Yes", (dialog, which) -> deleteCourse(courseId))
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    for (Course course : courseList) {
+                        if (course.getCourseId().equals(courseId)) {
+                            deleteCourse(course.getFirestoreId());
+                            break;
+                        }
+                    }
+                })
                 .setNegativeButton("No", null)
                 .show();
     }
 
-    private void deleteCourse(String courseId) {
+    private void deleteCourse(String firestoreId) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        // Query the Courses collection to find the document with the matching courseId
         db.collection("Courses")
-                .whereEqualTo("courseId", courseId)
-                .get()
-                .addOnCompleteListener(task -> {
-                    if (task.isSuccessful() && !task.getResult().isEmpty()) {
-                        // Get the first document where the courseId matches
-                        QueryDocumentSnapshot document = (QueryDocumentSnapshot) task.getResult().getDocuments().get(0);
-                        String documentId = document.getId();  // Get the document ID
-
-                        // Now delete the document using the document ID
-                        db.collection("Courses")
-                                .document(documentId)
-                                .delete()
-                                .addOnCompleteListener(deleteTask -> {
-                                    if (deleteTask.isSuccessful()) {
-                                        Log.d("DeleteCourse", "Course deleted successfully.");
-                                        Toast.makeText(getContext(), "Course deleted successfully", Toast.LENGTH_SHORT).show();
-                                        // Remove course from local list
-                                        for (Course course : courseList) {
-                                            if (course.getCourseId().equals(courseId)) {
-                                                courseList.remove(course);
-                                                break;
-                                            }
-                                        }
-                                        courseAdapter.notifyDataSetChanged(); // Notify the adapter to refresh the RecyclerView
-                                    } else {
-                                        Log.e("DeleteCourse", "Error deleting course", deleteTask.getException());
-                                    }
-                                });
+                .document(firestoreId)
+                .delete()
+                .addOnCompleteListener(deleteTask -> {
+                    if (deleteTask.isSuccessful()) {
+                        Log.d(TAG, "Course deleted successfully");
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Course deleted successfully", Toast.LENGTH_SHORT).show();
+                        }
+                        courseList.removeIf(course -> course.getFirestoreId().equals(firestoreId));
+                        courseAdapter.notifyDataSetChanged();
                     } else {
-                        Log.e("DeleteCourse", "No matching course found.");
+                        Log.e(TAG, "Error deleting course", deleteTask.getException());
+                        if (getContext() != null) {
+                            Toast.makeText(getContext(), "Error deleting course", Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
     }
-
-
 }
