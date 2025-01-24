@@ -3,6 +3,7 @@ package com.example.merainstitue;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,6 +11,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.merainstitue.databinding.ActivityMainBinding;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,39 +24,37 @@ public class MainActivity extends AppCompatActivity {
 
         FirebaseFirestore.setLoggingEnabled(true);
 
-        // Check if it's the first launch and show onboarding if needed
-        if (isFirstLaunch()) {
-            setFirstLaunchFalse(); // Mark as not first launch
-            Intent intent = new Intent(this, OnboardingActivity.class);
+        // Check if the user is logged in
+        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
+        Log.e("checking", prefs.toString());
+        Log.e("checking", "SharedPreferences contents:");
+
+        Map<String, ?> allEntries = prefs.getAll();
+        for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
+            Log.e("checking", entry.getKey() + ": " + entry.getValue().toString());
+        }
+        boolean isValidLogin = prefs.getBoolean("isValidLogin", false);
+        Log.d("LoginCheck", "isValidLogin: " + isValidLogin); // Debugging
+        if (!isValidLogin) {
+            // Redirect to LoginActivity if the user is not logged in
+            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
             finish();
             return;
         }
 
-        // Check if the user is logged in
-        SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
-        boolean isValidLogin = prefs.getBoolean("isValidLogin", false);
+        // Load MainActivity layout if user is logged in
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        setContentView(binding.getRoot());
 
-        if (!isValidLogin) {
-            // If user is not logged in, redirect to LoginActivity
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            // User is logged in, load MainActivity layout
-            binding = ActivityMainBinding.inflate(getLayoutInflater());
-            setContentView(binding.getRoot());
+        // Setup bottom navigation
+        setupBottomNavigation();
 
-            // Setup bottom navigation
-            setupBottomNavigation();
-
-            // Load HomeFragment as the default fragment
-            if (savedInstanceState == null) {
-                replaceFragment(new HomeFragment()); // Load the home fragment by default
-            }
+        // Load HomeFragment as the default fragment
+        if (savedInstanceState == null) {
+            replaceFragment(new HomeFragment()); // Load the home fragment by default
         }
     }
-
 
     private void setupBottomNavigation() {
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
@@ -84,8 +85,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void replaceFragment(Fragment fragment) {
         getSupportFragmentManager().beginTransaction()

@@ -120,15 +120,14 @@ public class LoginActivity extends AppCompatActivity {
                                 .addOnSuccessListener(documentSnapshot -> {
                                     if (documentSnapshot.exists()) {
                                         String role = documentSnapshot.getString("role");
-
                                         if (role != null) {
-                                            // Save the role and login state in SharedPreferences
                                             SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
                                             SharedPreferences.Editor editor = prefs.edit();
-                                            editor.putBoolean("isValidLogin", true);
-                                            editor.putString("role", role);
+                                            editor.putBoolean("isValidLogin", true); // Mark the user as logged in
+                                            editor.putString("role", role); // Save the user's role (e.g., "student" or "teacher")
                                             editor.apply();
 
+                                            // Notify the user and redirect to MainActivity
                                             Toast.makeText(LoginActivity.this, "Login successful!", Toast.LENGTH_SHORT).show();
                                             redirectToMainActivity();
                                         } else {

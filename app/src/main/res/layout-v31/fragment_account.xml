@@ -142,6 +142,19 @@
             android:textSize="16sp"
             />
 
+
+        <!-- Update User Profile Button -->
+        <TextView
+            android:layout_marginTop="14dp"
+            android:layout_width="match_parent"
+            android:paddingTop="7dp"
+            android:id="@+id/userProfile"
+            android:paddingBottom="7dp"
+            android:layout_height="wrap_content"
+            android:text="Update Profile"
+            android:textSize="16sp"
+            />
+
         <!-- Logout Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/logOut"

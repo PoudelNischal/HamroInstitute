@@ -1,5 +1,6 @@
 package com.example.merainstitue;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -8,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,10 +29,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.io.File;
+import java.util.Map;
+import java.util.Objects;
+
 public class AccountFragment extends Fragment {
 
     private ImageView profileImageView;
-    private TextView fullNameTextView, emailTextView, usernameTextView,changePasswordButton;
+    private TextView fullNameTextView, emailTextView, usernameTextView, changePasswordButton, userProfile;
     private Switch notificationsSwitch, themeSwitch;
     private Button logOutButton;
 
@@ -58,14 +64,36 @@ public class AccountFragment extends Fragment {
         themeSwitch = rootView.findViewById(R.id.themeSwitch);
         logOutButton = rootView.findViewById(R.id.logOut);
         changePasswordButton = rootView.findViewById(R.id.changePasswordButton);
+        userProfile = rootView.findViewById(R.id.userProfile);
 
         // Set up log out button
-        logOutButton.setOnClickListener(v -> logOutUser());
+        logOutButton.setOnClickListener(v -> {
+            // Sign out from Firebase
+            firebaseAuth.signOut();
+
+            // Clear any shared preferences related to login
+            SharedPreferences prefs = getActivity().getSharedPreferences("AppPrefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putBoolean("isValidLogin", false);  // Mark login status as false
+            editor.apply();
+
+            // Redirect to the LoginActivity
+            Intent intent = new Intent(getActivity(), LoginActivity.class);
+            startActivity(intent);
+
+            // Optionally, call finish() if you want to close the current activity and prevent going back to the logged-in screen
+            getActivity().finish();
+        });
 
         // Set up change password button
         changePasswordButton.setOnClickListener(v -> {
             ChangePasswordBottomSheetFragment changePasswordBottomSheet = new ChangePasswordBottomSheetFragment();
             changePasswordBottomSheet.show(getChildFragmentManager(), changePasswordBottomSheet.getTag());
+        });
+
+        userProfile.setOnClickListener(v -> {
+            UpdateProfileBottomSheetFragment updateProfileBottomSheetFragment = new UpdateProfileBottomSheetFragment();
+            updateProfileBottomSheetFragment.show(getChildFragmentManager(), updateProfileBottomSheetFragment.getTag());
         });
 
         // Load settings from SharedPreferences
@@ -97,6 +125,7 @@ public class AccountFragment extends Fragment {
         return rootView;
     }
 
+    @SuppressLint("SetTextI18n")
     private void fetchUserData() {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
@@ -151,17 +180,6 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    private void logOutUser() {
-        firebaseAuth.signOut();
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putBoolean("isValidLogin", false);
-        editor.apply();
-
-        Intent intent = new Intent(getActivity(), LoginActivity.class);
-        startActivity(intent);
-        getActivity().finish();
-    }
 
     @Override
     public void onStop() {
