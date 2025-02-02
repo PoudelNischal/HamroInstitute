@@ -118,7 +118,7 @@ public class RegisterActivity extends AppCompatActivity {
                             convertAndSaveUserData(user.getUid(), fullName, email, role);
 
                             // Navigate to MainActivity
-                            Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
+                            Intent intent = new Intent(RegisterActivity.this, LoginActivity.class);
                             startActivity(intent);
                             finish(); // Close the current activity
                         }

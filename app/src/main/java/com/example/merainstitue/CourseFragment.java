@@ -64,6 +64,7 @@ public class CourseFragment extends Fragment implements CourseAdapter.OnCourseCl
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
         db.collection("Courses")
+                .whereEqualTo("teacherId", currentUserId)
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {

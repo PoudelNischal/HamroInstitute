@@ -23,11 +23,20 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         FirebaseFirestore.setLoggingEnabled(true);
+        // Check if it's the first launch and show onboarding if needed
+        if (isFirstLaunch()) {
+            setFirstLaunchFalse(); // Mark as not first launch
+            Intent intent = new Intent(this, OnboardingActivity.class);
+            startActivity(intent);
+            finish();
+            return;
+        }
 
         // Check if the user is logged in
         SharedPreferences prefs = getSharedPreferences("AppPrefs", MODE_PRIVATE);
         Log.e("checking", prefs.toString());
         Log.e("checking", "SharedPreferences contents:");
+
 
         Map<String, ?> allEntries = prefs.getAll();
         for (Map.Entry<String, ?> entry : allEntries.entrySet()) {
